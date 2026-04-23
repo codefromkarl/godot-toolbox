@@ -40,6 +40,7 @@
 - `templates/base/`：基础项目模板
 - `packs/`：可选插件 pack
 - `scripts/bootstrap_toolbox_project.sh`：按 pack 组装新项目
+- `scripts/verify_bootstrap_flow.sh`：验证真实产物链路，覆盖 bootstrap、headless import 和 `gdUnit4` smoke
 - `scripts/import_plugin_from_upstream.sh`：首次从 upstream 导入插件子树
 - `scripts/update_plugin_from_upstream.sh`：基于 lock 文件升级已纳入插件
 - `scripts/verify_toolbox_layout.sh`：校验工具箱布局
@@ -47,7 +48,7 @@
 - `docs/plugin-integration-standard.md`：插件接入标准
 - `docs/maintenance-workflow.md`：维护、导入、升级、组装与验证手册
 - `docs/selection-framework.md`：选型框架与当前归类理由
-- `docs/research/similar-projects.md`：外部参考项目速记
+- `docs/research/`：外部参考项目速记、插件探索智能体说明、热门插件扫描快照
 - `upstreams.lock.json`：上游来源与版本锁定
 - `packs.manifest.json`：pack 定义、默认策略和适用场景
 
@@ -65,6 +66,23 @@
 
 `bootstrap_toolbox_project.sh` 不再在脚本里硬编码 `pack -> plugin.cfg` 映射。
 如果请求的 pack 不存在于 `packs.manifest.json`，脚本会直接报错。
+
+## 持续稳定验证
+
+本地最小验证链：
+
+```bash
+bash ./scripts/verify_toolbox_layout.sh
+bash ./scripts/verify_bootstrap_flow.sh
+```
+
+`verify_bootstrap_flow.sh` 会创建临时项目，默认叠加 `validation,debug,stateful,juice`，然后依次执行：
+
+- bootstrap 临时项目
+- `godot --headless --editor --quit-after 1 --import`
+- 生成项目内的 `gdUnit4` smoke
+
+CI 也跑同一条真实产物链。当前 workflow 固定使用官方 Linux 构建的 Godot `4.6.2`，本地建议保持 `4.6.x`，如果本机 Godot 不在 `PATH`，可通过 `GODOT_BIN=/path/to/godot` 显式指定。
 
 ## 维护工具箱
 

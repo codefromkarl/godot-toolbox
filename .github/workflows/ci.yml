@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    env:
+      GODOT_VERSION: 4.6.2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq unzip
+
+      - name: Install Godot
+        run: |
+          set -euo pipefail
+          godot_zip="Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          godot_url="https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-stable/${godot_zip}"
+          curl -L --fail --retry 3 --output /tmp/${godot_zip} "${godot_url}"
+          unzip -q /tmp/${godot_zip} -d /tmp/godot
+          sudo install -m 0755 /tmp/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64 /usr/local/bin/godot
+          godot --version
+
+      - name: Check shell syntax
+        run: bash -n scripts/*.sh templates/base/scripts/*.sh
+
+      - name: Check JSON syntax
+        run: |
+          python3 -m json.tool packs.manifest.json >/dev/null
+          python3 -m json.tool upstreams.lock.json >/dev/null
+
+      - name: Verify toolbox layout
+        run: bash ./scripts/verify_toolbox_layout.sh
+
+      - name: Verify bootstrap flow
+        run: bash ./scripts/verify_bootstrap_flow.sh

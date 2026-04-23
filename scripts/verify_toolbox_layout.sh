@@ -4,14 +4,18 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 required_paths=(
+  ".github/workflows/ci.yml"
   "README.md"
   "docs/plugin-catalog.md"
   "docs/plugin-integration-standard.md"
   "docs/maintenance-workflow.md"
   "docs/selection-framework.md"
+  "docs/research/godot-plugin-scout-agent.md"
+  "docs/research/hot-plugin-scan-2026-04.md"
   "scripts/bootstrap_toolbox_project.sh"
   "scripts/import_plugin_from_upstream.sh"
   "scripts/update_plugin_from_upstream.sh"
+  "scripts/verify_bootstrap_flow.sh"
   "packs.manifest.json"
   "upstreams.lock.json"
   "templates/base/godot/project.godot.in"

@@ -168,11 +168,7 @@ python3 -m json.tool upstreams.lock.json >/dev/null
 ### 3. 真实产物检查
 
 ```bash
-tmpdir=$(mktemp -d)
-./scripts/bootstrap_toolbox_project.sh "$tmpdir" --packs=validation,debug,stateful,juice
-godot --headless --editor --quit-after 1 --path "$tmpdir/godot" --import
-GODOT_BIN="$(command -v godot)" bash "$tmpdir/scripts/gdunit4_smoke.sh"
-rm -rf "$tmpdir"
+bash ./scripts/verify_bootstrap_flow.sh
 ```
 
 如果本轮改动涉及 `import/update`，还应补：
@@ -202,3 +198,15 @@ rm -rf "$tmpdir"
 5. 最后提交并推送
 
 这样可以把选型错误、版本错误、路径错误和验证错误尽量提前暴露。
+
+## H. CI 基线
+
+仓库级 CI 入口在 `.github/workflows/ci.yml`，当前固定跑 4 类检查：
+
+1. 布局检查：`bash ./scripts/verify_toolbox_layout.sh`
+2. Shell 语法检查：`bash -n scripts/*.sh templates/base/scripts/*.sh`
+3. JSON 语法检查：`python3 -m json.tool ...`
+4. 真实产物检查：`bash ./scripts/verify_bootstrap_flow.sh`
+
+当前 workflow 显式安装官方 Linux Godot `4.6.2` 构建，并在该版本上运行 headless import 与 `gdUnit4` smoke。
+本地开发建议维持 `4.6.x`；如果本机二进制路径不标准，统一通过 `GODOT_BIN` 注入。
