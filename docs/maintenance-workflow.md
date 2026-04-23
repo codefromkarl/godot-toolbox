@@ -35,10 +35,11 @@
 4. 它的升级与维护成本是否可控？
 5. 它是否能通过本地脚本验证，而不是只能靠编辑器手工点击？
 
-结论只有 4 种：
+结论只有 5 种：
 
 - 进入 `base`
 - 进入某个 `pack`
+- 先作为候选 `pack / PoC`
 - 只保留为外部参考
 - 暂不纳入
 
@@ -60,6 +61,16 @@
 - 不适合所有项目默认启用
 - 可以按项目需要叠加
 - 不会接管项目核心真相
+
+### 候选 `pack / PoC`
+
+如果方向值得继续，但还不适合进入 `packs.manifest.json`，先按候选 PoC 处理：
+
+- 目录可以先放在 `packs/<name>/`
+- 必须明确标注“未纳入正式 pack”
+- 不修改默认 `bootstrap` 行为
+- 不接入默认验证链
+- 通过独立验证脚本证明这条路径值得继续
 
 ## B. 首次导入上游插件
 
@@ -169,6 +180,12 @@ python3 -m json.tool upstreams.lock.json >/dev/null
 
 ```bash
 bash ./scripts/verify_bootstrap_flow.sh
+```
+
+如果本轮改动的是候选 `automation` PoC，再补：
+
+```bash
+bash ./scripts/verify_automation_pack_poc.sh
 ```
 
 如果本轮改动涉及 `import/update`，还应补：

@@ -13,6 +13,10 @@
 - `stateful`：`Godot State Charts`
 - `juice`：`Sparkle Lite`
 
+另外保留一个**候选**方向：
+
+- `packs/automation/`：`GodotE2E` 候选 PoC 骨架，当前**不在** `packs.manifest.json`，也**不参与**默认 bootstrap
+
 ## 设计原则
 
 - 默认只启用适合自动化和 CI 的基线能力。
@@ -41,6 +45,7 @@
 - `packs/`：可选插件 pack
 - `scripts/bootstrap_toolbox_project.sh`：按 pack 组装新项目
 - `scripts/verify_bootstrap_flow.sh`：验证真实产物链路，覆盖 bootstrap、headless import 和 `gdUnit4` smoke
+- `scripts/verify_automation_pack_poc.sh`：验证 `packs/automation/` 候选 PoC 骨架，不接入默认验证链
 - `scripts/import_plugin_from_upstream.sh`：首次从 upstream 导入插件子树
 - `scripts/update_plugin_from_upstream.sh`：基于 lock 文件升级已纳入插件
 - `scripts/verify_toolbox_layout.sh`：校验工具箱布局
@@ -83,6 +88,14 @@ bash ./scripts/verify_bootstrap_flow.sh
 - 生成项目内的 `gdUnit4` smoke
 
 CI 也跑同一条真实产物链。当前 workflow 固定使用官方 Linux 构建的 Godot `4.6.2`，本地建议保持 `4.6.x`，如果本机 Godot 不在 `PATH`，可通过 `GODOT_BIN=/path/to/godot` 显式指定。
+
+候选 `automation` PoC 走独立入口：
+
+```bash
+bash ./scripts/verify_automation_pack_poc.sh
+```
+
+这个脚本只验证候选骨架和最小 bootstrap 前提，不会把 `automation` 接到默认 pack 清单里。
 
 ## 维护工具箱
 

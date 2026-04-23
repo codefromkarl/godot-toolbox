@@ -1,0 +1,12 @@
+# Candidate PoC placeholder only.
+#
+# Do not add an unverified GodotE2E package name here.
+# The next maintainer should first confirm:
+# 1. the real Python package/install command
+# 2. whether version pinning belongs in this file or a separate lock file
+# 3. how the Python side coordinates with any Godot-side addon
+#
+# Expected follow-up:
+# - validate upstream install instructions
+# - lock the real package name and version
+# - add a minimal, actually runnable E2E smoke test
