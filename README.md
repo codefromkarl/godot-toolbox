@@ -16,6 +16,7 @@
 另外保留一个**候选**方向：
 
 - `packs/automation/`：`GodotE2E` 候选 PoC 骨架，当前**不在** `packs.manifest.json`，也**不参与**默认 bootstrap
+  但其 vendored upstream 已记录在 `upstreams.lock.json`，可单独走升级闭环
 
 ## 设计原则
 
@@ -47,7 +48,7 @@
 - `scripts/verify_bootstrap_flow.sh`：验证真实产物链路，覆盖 bootstrap、headless import 和 `gdUnit4` smoke
 - `scripts/verify_automation_pack_poc.sh`：验证 `packs/automation/` 候选 PoC 骨架，不接入默认验证链
 - `scripts/import_plugin_from_upstream.sh`：首次从 upstream 导入插件子树
-- `scripts/update_plugin_from_upstream.sh`：基于 lock 文件升级已纳入插件
+- `scripts/update_plugin_from_upstream.sh`：基于 lock 文件升级已纳入插件或候选 PoC 的 vendored 子树
 - `scripts/verify_toolbox_layout.sh`：校验工具箱布局
 - `docs/plugin-catalog.md`：插件目录与建议
 - `docs/plugin-integration-standard.md`：插件接入标准
@@ -114,6 +115,12 @@ bash ./scripts/verify_automation_pack_poc.sh
 
 ```bash
 ./scripts/update_plugin_from_upstream.sh --id=signal_lens --version=1.4.1 --dry-run
+```
+
+候选 `automation` PoC 的上游也已锁定，可以独立预演升级：
+
+```bash
+./scripts/update_plugin_from_upstream.sh --id=godot_e2e --dry-run
 ```
 
 ## 当前默认策略

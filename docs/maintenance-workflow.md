@@ -93,6 +93,16 @@
   --version=<display_version>
 ```
 
+如果本轮只是把一个候选 PoC 的 vendored 上游接进 lock/upgrade 闭环，而**不**打算纳入正式 pack，就省略 `--pack`：
+
+```bash
+./scripts/import_plugin_from_upstream.sh \
+  --id=godot_e2e \
+  --repo=https://github.com/RandallLiuXin/godot-e2e \
+  --target=packs/automation/godot/addons/godot_e2e \
+  --version=1.1.0
+```
+
 必要时补充：
 
 - `--ref=<git_ref>`
@@ -107,9 +117,17 @@
 - `packs.manifest.json` 中 pack 与插件归属一致
 - README 或相关文档反映了这个新能力
 
+如果是候选 PoC，确认点改成：
+
+- 目标目录下有 `plugin.cfg`
+- `upstreams.lock.json` 写入了正确条目
+- `packs.manifest.json` **没有**被意外追加候选 pack / plugin
+- 候选 PoC 的独立 README 或验证脚本已说明这条路径如何验证
+
 ## C. 升级已纳入插件
 
 升级时，优先基于 lock 文件，而不是手工复制 vendor 目录。
+这同样适用于仍留在独立入口里的候选 PoC；是否进入默认链，不由 upgrade 脚本决定。
 
 ### 升级命令
 
@@ -135,6 +153,12 @@
 - `upstreams.lock.json` 中的 `version/ref` 与实际 checkout 一致
 - vendor 目录或 tool metadata 没有意外回退
 - 所有验证仍通过
+
+如果升级的是候选 automation PoC，还要额外确认：
+
+- `packs.manifest.json` 仍然不包含 `automation`
+- 默认 bootstrap 输出仍然不包含 `godot_e2e`
+- `bash ./scripts/verify_automation_pack_poc.sh` 仍然通过
 
 ## D. 组装一个新项目
 
@@ -193,6 +217,19 @@ bash ./scripts/verify_automation_pack_poc.sh
 ```bash
 ./scripts/import_plugin_from_upstream.sh ... --dry-run
 ./scripts/update_plugin_from_upstream.sh --id=<entry_id> --dry-run
+```
+
+当前候选 automation PoC 的对应命令是：
+
+```bash
+./scripts/import_plugin_from_upstream.sh \
+  --id=godot_e2e \
+  --repo=https://github.com/RandallLiuXin/godot-e2e \
+  --target=packs/automation/godot/addons/godot_e2e \
+  --version=1.1.0 \
+  --dry-run
+
+./scripts/update_plugin_from_upstream.sh --id=godot_e2e --dry-run
 ```
 
 ## F. 提交前检查

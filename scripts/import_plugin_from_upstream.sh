@@ -13,7 +13,7 @@ Usage:
     --id <plugin_id> \
     --repo <git_url> \
     --target <repo_relative_target_dir> \
-    [--pack=<base|validation|debug|stateful|juice>] \
+    [--pack=<manifest_pack_id>] \
     [--ref=<git_ref>] \
     [--version=<display_version>] \
     [--source-subdir=<path_inside_upstream>] \
@@ -24,6 +24,7 @@ Usage:
 Notes:
   - 第一版仅支持 git upstream + vendor-subtree 导入。
   - 若无法自动推断插件目录，请显式传入 --source-subdir。
+  - 若目标是候选 PoC / 独立入口，省略 --pack；这样会写入 upstreams.lock.json 并 vendor 到目标目录，但不会追加到 packs.manifest.json。
 EOF
 }
 

@@ -93,6 +93,23 @@
         "note": "当前为从本地已验证项目提取的 vendor snapshot，后续若找到稳定 git upstream 再切换"
       },
       "patches": []
+    },
+    {
+      "id": "godot_e2e",
+      "kind": "plugin",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/RandallLiuXin/godot-e2e",
+        "version": "1.1.0",
+        "ref": "5bc097db714f1517cfa7b268ab919463d36f4c2c"
+      },
+      "integration": {
+        "mode": "vendor-subtree",
+        "target": "packs/automation/godot/addons/godot_e2e",
+        "source_subdir": "addons/godot_e2e",
+        "note": "候选 automation PoC 的 vendored addon 来源；仅用于独立 PoC 闭环，不进入 packs.manifest.json、默认 bootstrap、默认 CI 或默认验证链"
+      },
+      "patches": []
     }
   ]
 }

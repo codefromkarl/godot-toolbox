@@ -19,6 +19,7 @@ Usage:
 Notes:
   - 第一版支持 git upstream + vendor-subtree 升级。
   - 若 lock entry 是 tool-only，这一版仅允许更新 lock metadata，不自动改写目标文件。
+  - 候选 PoC 的 vendor-subtree 条目也可走同一升级入口；是否进入默认链，仍以 packs.manifest.json 和独立验证脚本为准。
 EOF
 }
 

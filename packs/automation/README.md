@@ -1,30 +1,55 @@
 # Automation Candidate Pack
 
-这是 `GodotE2E` 方向的候选 pack / PoC 骨架，不是已经纳入的正式 pack。
+这是 `GodotE2E` 方向的候选 automation pack，当前已经从占位骨架升级成**可运行的最小 PoC**，但它仍然是**独立入口**，不是已经纳入默认链路的正式 pack。
 
-当前约束：
+当前硬约束仍然保持不变：
 
 - **不在** `packs.manifest.json` 中
 - **不参与** 默认 `bootstrap` 行为
 - **不接入** 当前默认 CI / 默认验证链
-
-这个目录的目标是先把 E2E 自动化方向的最小骨架和评估入口固定下来，等上游安装方式、Python 包名、Godot 侧接入面都验证清楚后，再决定是否晋升成正式 pack。
+- 上游来源单独锁定在仓库根目录的 `upstreams.lock.json`，升级也走仓库统一脚本
 
 ## 当前内容
 
+- `godot/addons/godot_e2e/`
+  vendored 的上游 Godot addon，来源于 `godot-e2e` `v1.1.0`，包含 `LICENSE` 与 `NOTICE`。
 - `python/requirements-e2e.txt`
-  Python 侧依赖占位。当前故意不锁定真实包名，避免把未经确认的安装名写进仓库。
-- `examples/tests/test_ui_smoke_placeholder.py`
-  一个最小占位测试骨架，只表达未来 E2E 测试的大致入口，不代表已可执行。
+  已锁定可安装的 Python 依赖：`godot-e2e==1.1.0` 与 `pytest==8.4.1`。
+- `examples/tests/`
+  真实的 pytest smoke：启动 Godot、等待 `/root/Main`、断言节点存在，并读取 `name == "Main"`。
+- `scripts/run_e2e_smoke.sh`
+  pack-local 入口。负责创建 venv、安装依赖、做 Godot import preflight，并调用 `godot-e2e` 运行 smoke。Linux 无图形会话时，若系统存在 `xvfb-run`，会优先通过它启动。
 
-## 当前缺口
+## 手动运行
 
-1. 锁定真实的 `GodotE2E` Python 包名、安装方式和版本策略
-2. 确认是否需要 vendoring Godot 侧 addon，以及应落在哪个目录
-3. 定义最小可接受的 PoC 成功标准
-4. 决定通过什么条件把它晋升为正式 `pack`
+对已经具备 `AutomationServer` autoload 的 Godot 项目，可以独立运行：
 
-## 本地验证
+```bash
+bash ./packs/automation/scripts/run_e2e_smoke.sh /path/to/godot-project
+```
+
+默认会运行 pack 内置 smoke。这个内置 smoke 的项目契约是：
+
+- `project.godot` 必须声明 `run/main_scene`
+- 该主场景的根节点名称必须是 `Main`
+- 也就是测试进程会等待并访问 `/root/Main`
+
+脚本在使用内置 smoke 时会先做这组 preflight 检查；如果你的项目不满足这个契约，就不要用默认测试路径，而是显式传入自定义 pytest 文件：
+
+```bash
+bash ./packs/automation/scripts/run_e2e_smoke.sh /path/to/godot-project /path/to/your_test.py
+```
+
+常用环境变量：
+
+- `GODOT_BIN`
+  显式指定 Godot 可执行文件
+- `E2E_VENV_DIR`
+  指定 venv 目录；未指定时脚本会创建并清理一个隔离的临时 venv
+- `E2E_TEST_PATH`
+  指定要运行的 pytest 文件；默认是 pack 内置 smoke
+
+## 仓库内验证
 
 独立验证入口：
 
@@ -34,9 +59,30 @@ bash ./scripts/verify_automation_pack_poc.sh
 
 这个脚本会：
 
+- 先校验 `upstreams.lock.json`、`requirements-e2e.txt` 与 vendored addon 子树彼此一致
 - bootstrap 一个**不叠加 automation** 的最小临时项目
-- 校验候选骨架文件是否齐全
-- 在条件满足时执行最小占位验证
-- 输出当前 PoC 还缺什么
+- 先断言 `automation` 仍然不在 manifest 与默认 bootstrap 输出中
+- 再把 vendored addon 与 vendored `plugin.gd` 声明的 autoload 真相临时注入到该项目
+- 调用 pack-local smoke runner 验证最小闭环
 
-它不会修改当前默认验证链。
+它不会修改当前默认验证链，也不会把 automation 自动接入正式 pack 流程。
+
+## Upstream / Upgrade
+
+当前 vendored addon 的 upstream 已锁定为：
+
+- repo: `https://github.com/RandallLiuXin/godot-e2e`
+- version: `1.1.0`
+- ref: `5bc097db714f1517cfa7b268ab919463d36f4c2c`
+
+预演升级时，走仓库统一入口：
+
+```bash
+bash ./scripts/update_plugin_from_upstream.sh --id=godot_e2e --dry-run
+```
+
+真正升级或重导入后，仍然只补跑这个候选 PoC 的独立验证：
+
+```bash
+bash ./scripts/verify_automation_pack_poc.sh
+```
