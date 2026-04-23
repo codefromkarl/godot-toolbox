@@ -13,7 +13,7 @@ require_cmd() {
   command -v "$1" >/dev/null 2>&1 || die "required command not found: $1"
 }
 
-ensure_cache_dir() {
+cache_dir_path() {
   require_cmd python3
   local rel
   rel="$(
@@ -26,8 +26,14 @@ with open(sys.argv[1], "r", encoding="utf-8") as fh:
 print(data.get("cache_dir", ".cache/upstreams"))
 PY
   )"
-  mkdir -p "${REPO_ROOT}/${rel}"
   printf '%s\n' "${REPO_ROOT}/${rel}"
+}
+
+ensure_cache_dir() {
+  local cache_dir
+  cache_dir="$(cache_dir_path)"
+  mkdir -p "${cache_dir}"
+  printf '%s\n' "${cache_dir}"
 }
 
 sync_git_cache() {
@@ -46,6 +52,47 @@ sync_git_cache() {
   git clone --filter=blob:none "${repo_url}" "${cache_path}"
 }
 
+prepare_git_workspace() {
+  local repo_url="$1"
+  local cache_path="$2"
+  local dry_run="${3:-0}"
+
+  if [[ "${dry_run}" == "1" ]]; then
+    local temp_dir
+    temp_dir="$(mktemp -d "${TMPDIR:-/tmp}/godot-toolbox-upstream.XXXXXX")"
+    sync_git_cache "${repo_url}" "${temp_dir}"
+    printf '%s\n' "${temp_dir}"
+    return 0
+  fi
+
+  sync_git_cache "${repo_url}" "${cache_path}"
+  printf '%s\n' "${cache_path}"
+}
+
+cleanup_git_workspace() {
+  local workspace_path="${1:-}"
+  local cache_path="${2:-}"
+
+  [[ -n "${workspace_path}" ]] || return 0
+  [[ -n "${cache_path}" ]] || return 0
+  [[ "${workspace_path}" != "${cache_path}" ]] || return 0
+
+  rm -rf "${workspace_path}"
+}
+
+default_remote_ref() {
+  local cache_path="$1"
+
+  local default_ref=""
+  default_ref="$(git -C "${cache_path}" symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#^origin/##')"
+  if [[ -z "${default_ref}" ]]; then
+    default_ref="$(git -C "${cache_path}" remote show origin | sed -n '/HEAD branch/s/.*: //p' | head -n 1)"
+  fi
+  [[ -n "${default_ref}" ]] || die "unable to determine default branch for ${cache_path}"
+
+  printf 'origin/%s\n' "${default_ref}"
+}
+
 checkout_git_ref() {
   local cache_path="$1"
   local ref="$2"
@@ -55,14 +102,7 @@ checkout_git_ref() {
     return 0
   fi
 
-  local default_ref=""
-  default_ref="$(git -C "${cache_path}" symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#^origin/##')"
-  if [[ -z "${default_ref}" ]]; then
-    default_ref="$(git -C "${cache_path}" remote show origin | sed -n '/HEAD branch/s/.*: //p' | head -n 1)"
-  fi
-  [[ -n "${default_ref}" ]] || die "unable to determine default branch for ${cache_path}"
-
-  git -C "${cache_path}" checkout --detach "origin/${default_ref}"
+  git -C "${cache_path}" checkout --detach "$(default_remote_ref "${cache_path}")"
 }
 
 resolve_checkout_ref() {
@@ -88,9 +128,11 @@ resolve_checkout_ref() {
         return 0
       fi
     fi
+
+    die "requested version could not be resolved to a git ref: ${version}"
   fi
 
-  printf '\n'
+  default_remote_ref "${cache_path}"
 }
 
 resolve_source_path() {
@@ -167,37 +209,44 @@ entry_id, kind, source_type, repo_url, version, ref, mode, target, source_subdir
 with lock_path.open("r", encoding="utf-8") as fh:
     data = json.load(fh)
 
-entry = {
-    "id": entry_id,
-    "kind": kind,
-    "source": {
-        "type": source_type,
-        "url": repo_url,
-    },
-    "integration": {
-        "mode": mode,
-        "target": target,
-    },
-    "patches": [],
-}
-
-if version:
-    entry["source"]["version"] = version
-if ref:
-    entry["source"]["ref"] = ref
-if source_subdir:
-    entry["integration"]["source_subdir"] = source_subdir
-if note:
-    entry["integration"]["note"] = note
-
 entries = data.setdefault("entries", [])
+existing = None
 for index, existing in enumerate(entries):
     if existing.get("id") == entry_id:
-      entry["patches"] = existing.get("patches", [])
-      entries[index] = entry
-      break
+        existing = dict(existing)
+        break
 else:
+    index = None
+    existing = {}
+
+entry = dict(existing)
+entry["id"] = entry_id
+entry["kind"] = kind or entry.get("kind", "")
+
+source = dict(entry.get("source", {}))
+source["type"] = source_type or source.get("type", "")
+source["url"] = repo_url or source.get("url", "")
+if version:
+    source["version"] = version
+if ref:
+    source["ref"] = ref
+entry["source"] = source
+
+integration = dict(entry.get("integration", {}))
+integration["mode"] = mode or integration.get("mode", "")
+if target:
+    integration["target"] = target
+if source_subdir:
+    integration["source_subdir"] = source_subdir
+if note:
+    integration["note"] = note
+entry["integration"] = integration
+entry["patches"] = entry.get("patches", [])
+
+if index is None:
     entries.append(entry)
+else:
+    entries[index] = entry
 
 with lock_path.open("w", encoding="utf-8") as fh:
     json.dump(data, fh, ensure_ascii=False, indent=2)

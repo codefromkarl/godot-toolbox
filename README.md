@@ -59,7 +59,10 @@
 
 - 复制 `base` 模板
 - 叠加所选 pack 的 `godot/addons/`
-- 生成目标项目的 `godot/project.godot`
+- 根据 `packs.manifest.json` 里的 `base_template.default_enabled_plugins` 和 `packs[].plugins` 生成目标项目的 `godot/project.godot`
+
+`bootstrap_toolbox_project.sh` 不再在脚本里硬编码 `pack -> plugin.cfg` 映射。
+如果请求的 pack 不存在于 `packs.manifest.json`，脚本会直接报错。
 
 ## 维护工具箱
 

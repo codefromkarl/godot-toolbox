@@ -67,21 +67,35 @@ note="${fields[9]-}"
 [[ "${source_type}" == "git" ]] || die "only git upstreams are supported in this version"
 
 new_version="${VERSION:-${current_version}}"
+resolve_ref_input="${current_ref}"
 
-cache_root="$(ensure_cache_dir)"
+if [[ -n "${REF}" ]]; then
+  resolve_ref_input="${REF}"
+elif [[ -n "${VERSION}" ]]; then
+  resolve_ref_input=""
+fi
+
+if [[ "${DRY_RUN}" == "1" ]]; then
+  cache_root="$(cache_dir_path)"
+else
+  cache_root="$(ensure_cache_dir)"
+fi
 cache_path="${cache_root}/${ENTRY_ID}"
+workspace_path=""
+trap 'cleanup_git_workspace "${workspace_path}" "${cache_path}"' EXIT
 
-log "syncing upstream cache: ${repo_url}"
-sync_git_cache "${repo_url}" "${cache_path}"
-new_ref="$(resolve_checkout_ref "${cache_path}" "${REF:-${current_ref}}" "${VERSION:-${current_version}}")"
-checkout_git_ref "${cache_path}" "${new_ref}"
+log "preparing upstream workspace: ${repo_url}"
+workspace_path="$(prepare_git_workspace "${repo_url}" "${cache_path}" "${DRY_RUN}")"
+checkout_ref="$(resolve_checkout_ref "${workspace_path}" "${resolve_ref_input}" "${new_version}")"
+checkout_git_ref "${workspace_path}" "${checkout_ref}"
 
 if [[ "${mode}" == "tool-only" ]]; then
   if [[ "${DRY_RUN}" == "1" ]]; then
     log "dry-run tool-only update summary"
     log "  id=${ENTRY_ID}"
     log "  version=${new_version:-<unchanged>}"
-    log "  ref=${new_ref}"
+    log "  ref=${checkout_ref}"
+    log "  mode=tool-only (lock metadata only; tracked targets stay unchanged)"
     exit 0
   fi
 
@@ -91,18 +105,20 @@ if [[ "${mode}" == "tool-only" ]]; then
     "${source_type}" \
     "${repo_url}" \
     "${new_version}" \
-    "${REF:-${current_ref}}" \
+    "${checkout_ref}" \
     "${mode}" \
     "${target}" \
     "${source_subdir}" \
     "${note}"
 
   log "updated tool-only lock metadata for ${ENTRY_ID}"
+  log "  persisted version=${new_version:-<unchanged>}"
+  log "  persisted ref=${checkout_ref}"
   exit 0
 fi
 
 [[ "${mode}" == "vendor-subtree" ]] || die "unsupported integration mode: ${mode}"
-source_path="$(resolve_source_path "${cache_path}" "${source_subdir}" "${target}" "${ENTRY_ID}")"
+source_path="$(resolve_source_path "${workspace_path}" "${source_subdir}" "${target}" "${ENTRY_ID}")"
 dest_path="${REPO_ROOT}/${target}"
 
 if [[ "${DRY_RUN}" == "1" ]]; then
@@ -110,7 +126,7 @@ if [[ "${DRY_RUN}" == "1" ]]; then
   log "  id=${ENTRY_ID}"
   log "  source=${source_path}"
   log "  target=${dest_path}"
-  log "  ref=${new_ref}"
+  log "  ref=${checkout_ref}"
   log "  version=${new_version:-<unchanged>}"
   exit 0
 fi
@@ -124,7 +140,7 @@ update_upstreams_lock_entry \
   "${source_type}" \
   "${repo_url}" \
   "${new_version}" \
-  "${REF:-${current_ref}}" \
+  "${checkout_ref}" \
   "${mode}" \
   "${target}" \
   "${source_subdir}" \

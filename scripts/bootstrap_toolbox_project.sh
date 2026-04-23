@@ -3,11 +3,12 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BASE_TEMPLATE="${REPO_ROOT}/templates/base"
+MANIFEST_PATH="${REPO_ROOT}/packs.manifest.json"
 
 usage() {
   cat <<'EOF'
 Usage:
-  ./scripts/bootstrap_toolbox_project.sh <destination> [--packs=validation,debug,stateful,juice] [--force]
+  ./scripts/bootstrap_toolbox_project.sh <destination> [--packs=pack_a,pack_b] [--force]
 EOF
 }
 
@@ -59,44 +60,85 @@ copy_overlay() {
 
 copy_overlay "${BASE_TEMPLATE}"
 
-declare -a enabled_plugins=(
-  "res://addons/gdUnit4/plugin.cfg"
-)
-
-normalize_pack() {
-  case "$1" in
-    validation|debug|stateful|juice)
-      printf '%s\n' "$1"
-      ;;
-    "")
-      ;;
-    *)
-      echo "[bootstrap] ERROR: unsupported pack '$1'." >&2
-      exit 1
-      ;;
-  esac
+trim() {
+  local value="$1"
+  value="${value#"${value%%[![:space:]]*}"}"
+  value="${value%"${value##*[![:space:]]}"}"
+  printf '%s\n' "${value}"
 }
+
+manifest_has_pack() {
+  local pack_id="$1"
+  jq -e --arg pack_id "${pack_id}" \
+    '.packs[] | select(.id == $pack_id)' \
+    "${MANIFEST_PATH}" > /dev/null
+}
+
+manifest_pack_plugins() {
+  local pack_id="$1"
+  jq -r --arg pack_id "${pack_id}" \
+    '.packs[] | select(.id == $pack_id) | .plugins[]?' \
+    "${MANIFEST_PATH}"
+}
+
+manifest_supported_packs_csv() {
+  jq -r '[.packs[].id] | join(",")' "${MANIFEST_PATH}"
+}
+
+declare -a enabled_plugins=()
+declare -A seen_plugins=()
+declare -a normalized_packs=()
+declare -A seen_packs=()
+
+add_plugin_id() {
+  local plugin_id="$1"
+  local plugin_cfg=""
+
+  [[ -n "${plugin_id}" ]] || return 0
+
+  plugin_cfg="res://addons/${plugin_id}/plugin.cfg"
+  if [[ -z "${seen_plugins[${plugin_cfg}]+x}" ]]; then
+    enabled_plugins+=("${plugin_cfg}")
+    seen_plugins["${plugin_cfg}"]=1
+  fi
+}
+
+while IFS= read -r plugin_id; do
+  add_plugin_id "${plugin_id}"
+done < <(jq -r '.base_template.default_enabled_plugins[]?' "${MANIFEST_PATH}")
+
+while IFS= read -r plugin_id; do
+  add_plugin_id "${plugin_id}"
+done < <(manifest_pack_plugins "base")
 
 if [[ -n "${PACKS_CSV}" ]]; then
   IFS=',' read -r -a requested_packs <<< "${PACKS_CSV}"
   for raw_pack in "${requested_packs[@]}"; do
-    pack="$(normalize_pack "${raw_pack}")"
+    pack="$(trim "${raw_pack}")"
     [[ -n "${pack}" ]] || continue
-    copy_overlay "${REPO_ROOT}/packs/${pack}"
-    case "${pack}" in
-      validation)
-        enabled_plugins+=("res://addons/godot_doctor/plugin.cfg")
-        ;;
-      debug)
-        enabled_plugins+=("res://addons/signal_lens/plugin.cfg")
-        ;;
-      stateful)
-        enabled_plugins+=("res://addons/godot_state_charts/plugin.cfg")
-        ;;
-      juice)
-        enabled_plugins+=("res://addons/sparkle_lite/plugin.cfg")
-        ;;
-    esac
+
+    if ! manifest_has_pack "${pack}"; then
+      echo "[bootstrap] ERROR: pack '${pack}' is not defined in packs.manifest.json. Supported packs: $(manifest_supported_packs_csv)" >&2
+      exit 1
+    fi
+
+    if [[ -z "${seen_packs[${pack}]+x}" ]]; then
+      normalized_packs+=("${pack}")
+      seen_packs["${pack}"]=1
+    fi
+
+    if [[ "${pack}" != "base" ]]; then
+      pack_dir="${REPO_ROOT}/packs/${pack}"
+      if [[ ! -d "${pack_dir}" ]]; then
+        echo "[bootstrap] ERROR: pack '${pack}' is defined in packs.manifest.json but '${pack_dir}' does not exist." >&2
+        exit 1
+      fi
+      copy_overlay "${pack_dir}"
+    fi
+
+    while IFS= read -r plugin_id; do
+      add_plugin_id "${plugin_id}"
+    done < <(manifest_pack_plugins "${pack}")
   done
 fi
 
@@ -112,8 +154,9 @@ sed "s|__EDITOR_PLUGIN_LIST__|${plugin_list}|g" \
   "${DEST}/godot/project.godot.in" > "${DEST}/godot/project.godot"
 rm -f "${DEST}/godot/project.godot.in"
 
-if [[ -n "${PACKS_CSV}" ]]; then
-  printf '%s\n' "${PACKS_CSV}" > "${DEST}/.toolbox-packs"
+if [[ "${#normalized_packs[@]}" -gt 0 ]]; then
+  normalized_packs_csv="$(IFS=','; printf '%s' "${normalized_packs[*]}")"
+  printf '%s\n' "${normalized_packs_csv}" > "${DEST}/.toolbox-packs"
 fi
 
 echo "[bootstrap] Project created at ${DEST}"

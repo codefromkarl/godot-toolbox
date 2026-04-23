@@ -65,24 +65,32 @@ done
 [[ -n "${TARGET}" ]] || die "--target is required"
 [[ -n "${REF}" || -n "${VERSION}" ]] || die "either --ref or --version is required"
 
-cache_root="$(ensure_cache_dir)"
+if [[ "${DRY_RUN}" == "1" ]]; then
+  cache_root="$(cache_dir_path)"
+else
+  cache_root="$(ensure_cache_dir)"
+fi
 cache_path="${cache_root}/${ENTRY_ID}"
+workspace_path=""
+trap 'cleanup_git_workspace "${workspace_path}" "${cache_path}"' EXIT
 
-log "syncing upstream cache: ${REPO_URL}"
-sync_git_cache "${REPO_URL}" "${cache_path}"
-checkout_ref="$(resolve_checkout_ref "${cache_path}" "${REF}" "${VERSION}")"
-checkout_git_ref "${cache_path}" "${checkout_ref}"
+log "preparing upstream workspace: ${REPO_URL}"
+workspace_path="$(prepare_git_workspace "${REPO_URL}" "${cache_path}" "${DRY_RUN}")"
+checkout_ref="$(resolve_checkout_ref "${workspace_path}" "${REF}" "${VERSION}")"
+checkout_git_ref "${workspace_path}" "${checkout_ref}"
 
-source_path="$(resolve_source_path "${cache_path}" "${SOURCE_SUBDIR}" "${TARGET}" "${ENTRY_ID}")"
+source_path="$(resolve_source_path "${workspace_path}" "${SOURCE_SUBDIR}" "${TARGET}" "${ENTRY_ID}")"
 dest_path="${REPO_ROOT}/${TARGET}"
 
 if [[ "${DRY_RUN}" == "1" ]]; then
   log "dry-run import summary"
   log "  id=${ENTRY_ID}"
-  log "  cache=${cache_path}"
+  log "  workspace=${workspace_path}"
   log "  source=${source_path}"
   log "  target=${dest_path}"
   log "  pack=${PACK_ID:-<none>}"
+  log "  version=${VERSION:-<unchanged>}"
+  log "  ref=${checkout_ref}"
   exit 0
 fi
 
@@ -95,7 +103,7 @@ update_upstreams_lock_entry \
   "git" \
   "${REPO_URL}" \
   "${VERSION}" \
-  "${REF}" \
+  "${checkout_ref}" \
   "vendor-subtree" \
   "${TARGET}" \
   "${SOURCE_SUBDIR}" \
