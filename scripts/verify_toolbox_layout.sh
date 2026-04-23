@@ -9,6 +9,8 @@ required_paths=(
   "docs/plugin-integration-standard.md"
   "docs/selection-framework.md"
   "scripts/bootstrap_toolbox_project.sh"
+  "scripts/import_plugin_from_upstream.sh"
+  "scripts/update_plugin_from_upstream.sh"
   "packs.manifest.json"
   "upstreams.lock.json"
   "templates/base/godot/project.godot.in"

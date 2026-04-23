@@ -39,6 +39,8 @@
 - `templates/base/`：基础项目模板
 - `packs/`：可选插件 pack
 - `scripts/bootstrap_toolbox_project.sh`：按 pack 组装新项目
+- `scripts/import_plugin_from_upstream.sh`：首次从 upstream 导入插件子树
+- `scripts/update_plugin_from_upstream.sh`：基于 lock 文件升级已纳入插件
 - `scripts/verify_toolbox_layout.sh`：校验工具箱布局
 - `docs/plugin-catalog.md`：插件目录与建议
 - `docs/plugin-integration-standard.md`：插件接入标准
@@ -58,6 +60,25 @@
 - 复制 `base` 模板
 - 叠加所选 pack 的 `godot/addons/`
 - 生成目标项目的 `godot/project.godot`
+
+## 维护工具箱
+
+首次纳入一个 git upstream 插件：
+
+```bash
+./scripts/import_plugin_from_upstream.sh \
+  --id=signal_lens \
+  --repo=https://github.com/yannlemos/signal-lens \
+  --target=packs/debug/godot/addons/signal_lens \
+  --pack=debug \
+  --version=1.4.1
+```
+
+升级一个已纳入的插件：
+
+```bash
+./scripts/update_plugin_from_upstream.sh --id=signal_lens --version=1.4.1 --dry-run
+```
 
 ## 当前默认策略
 
