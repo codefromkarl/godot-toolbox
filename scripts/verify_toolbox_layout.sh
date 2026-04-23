@@ -7,6 +7,7 @@ required_paths=(
   "README.md"
   "docs/plugin-catalog.md"
   "docs/plugin-integration-standard.md"
+  "docs/maintenance-workflow.md"
   "docs/selection-framework.md"
   "scripts/bootstrap_toolbox_project.sh"
   "scripts/import_plugin_from_upstream.sh"

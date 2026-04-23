@@ -31,6 +31,7 @@
 选型框架见：
 
 - `docs/selection-framework.md`
+- `docs/maintenance-workflow.md`
 - `packs.manifest.json`
 - `upstreams.lock.json`
 
@@ -44,6 +45,7 @@
 - `scripts/verify_toolbox_layout.sh`：校验工具箱布局
 - `docs/plugin-catalog.md`：插件目录与建议
 - `docs/plugin-integration-standard.md`：插件接入标准
+- `docs/maintenance-workflow.md`：维护、导入、升级、组装与验证手册
 - `docs/selection-framework.md`：选型框架与当前归类理由
 - `docs/research/similar-projects.md`：外部参考项目速记
 - `upstreams.lock.json`：上游来源与版本锁定
