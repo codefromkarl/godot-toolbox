@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "cache_dir": ".cache/upstreams",
+  "entries": [
+    {
+      "id": "godot-gdscript-toolkit",
+      "kind": "tooling",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/Scony/godot-gdscript-toolkit",
+        "version": "4.5.0"
+      },
+      "integration": {
+        "mode": "tool-only",
+        "targets": [
+          "pyproject.toml",
+          "templates/base/pyproject.toml",
+          "templates/base/scripts/gdscript_toolkit_check.sh",
+          "templates/base/scripts/gdscript_toolkit_format.sh"
+        ]
+      },
+      "patches": []
+    },
+    {
+      "id": "gdUnit4",
+      "kind": "plugin",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/MikeSchulze/gdUnit4",
+        "version": "6.1.2",
+        "ref": "3ff9514357f683317c7d27270095423362fd0593"
+      },
+      "integration": {
+        "mode": "vendor-subtree",
+        "target": "templates/base/godot/addons/gdUnit4"
+      },
+      "patches": []
+    },
+    {
+      "id": "godot_doctor",
+      "kind": "plugin",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/codevogel/godot_doctor",
+        "version": "2.1.2",
+        "ref": "488eb90bc45d2bbd2a8dd155a36b8908de7d4885"
+      },
+      "integration": {
+        "mode": "vendor-subtree",
+        "target": "packs/validation/godot/addons/godot_doctor"
+      },
+      "patches": []
+    },
+    {
+      "id": "signal_lens",
+      "kind": "plugin",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/yannlemos/signal-lens",
+        "version": "1.4.1"
+      },
+      "integration": {
+        "mode": "vendor-subtree",
+        "target": "packs/debug/godot/addons/signal_lens"
+      },
+      "patches": []
+    },
+    {
+      "id": "godot_state_charts",
+      "kind": "plugin",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/derkork/godot-statecharts",
+        "version": "0.22.3"
+      },
+      "integration": {
+        "mode": "vendor-subtree",
+        "target": "packs/stateful/godot/addons/godot_state_charts"
+      },
+      "patches": []
+    },
+    {
+      "id": "sparkle_lite",
+      "kind": "plugin",
+      "source": {
+        "type": "asset-library",
+        "url": "https://godotassetlibrary.com/asset/4KshIx/sparkle-lite-%E2%80%94-game-feel-plugin-for-godot-4",
+        "version": "1.0.0"
+      },
+      "integration": {
+        "mode": "vendor-subtree",
+        "target": "packs/juice/godot/addons/sparkle_lite",
+        "note": "当前为从本地已验证项目提取的 vendor snapshot，后续若找到稳定 git upstream 再切换"
+      },
+      "patches": []
+    }
+  ]
+}

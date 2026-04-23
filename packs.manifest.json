@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "toolbox_identity": {
+    "name": "godot-toolbox",
+    "kind": "ai-native-godot-bootstrap-control-plane"
+  },
+  "selection_axes": [
+    "automation_value",
+    "reuse_breadth",
+    "domain_coupling",
+    "maintenance_cost",
+    "truth_boundary_risk"
+  ],
+  "base_template": {
+    "path": "templates/base",
+    "default_enabled_plugins": [
+      "gdUnit4"
+    ],
+    "default_tooling": [
+      "godot-gdscript-toolkit"
+    ],
+    "verification": [
+      "templates/base/scripts/gdscript_toolkit_check.sh",
+      "templates/base/scripts/gdscript_toolkit_format.sh",
+      "templates/base/scripts/gdunit4_smoke.sh"
+    ]
+  },
+  "packs": [
+    {
+      "id": "base",
+      "kind": "baseline",
+      "default": true,
+      "plugins": [
+        "gdUnit4"
+      ],
+      "tooling": [
+        "godot-gdscript-toolkit"
+      ],
+      "selection_rationale": "高自动化价值、低领域耦合、适合作为 Day 0 基线"
+    },
+    {
+      "id": "validation",
+      "kind": "optional-pack",
+      "default": false,
+      "plugins": [
+        "godot_doctor"
+      ],
+      "selection_rationale": "把资源与场景约束变成可执行校验，适合需要 contract 的项目",
+      "when_to_enable": [
+        "需要把场景或资源规则纳入 CI",
+        "需要 repo-owned validation suite"
+      ]
+    },
+    {
+      "id": "debug",
+      "kind": "optional-pack",
+      "default": false,
+      "plugins": [
+        "signal_lens"
+      ],
+      "selection_rationale": "调试价值高，但主要作用于开发阶段，不应默认进入所有项目",
+      "when_to_enable": [
+        "项目 heavily uses signals",
+        "需要可视化 signal flow 调试"
+      ]
+    },
+    {
+      "id": "stateful",
+      "kind": "optional-pack",
+      "default": false,
+      "plugins": [
+        "godot_state_charts"
+      ],
+      "selection_rationale": "适合显式状态图架构项目，但不应强绑到所有 starter",
+      "when_to_enable": [
+        "行为逻辑复杂且需要清晰状态转换",
+        "团队接受状态图建模成本"
+      ]
+    },
+    {
+      "id": "juice",
+      "kind": "optional-pack",
+      "default": false,
+      "plugins": [
+        "sparkle_lite"
+      ],
+      "selection_rationale": "表现层价值明显，但属于特定主题能力",
+      "when_to_enable": [
+        "需要快速建立 game-feel 工作流",
+        "项目重视反馈 authoring 与表现迭代"
+      ]
+    }
+  ],
+  "excluded": [
+    {
+      "id": "gdterm",
+      "reason": "主要提供编辑器内终端，agent 已有 shell，收益不足以覆盖维护面"
+    },
+    {
+      "id": "ui_text_tokens_validator",
+      "reason": "实现强绑定单一项目，应抽象成 repo-specific validator scaffold，而不是直接 vendoring"
+    }
+  ]
+}

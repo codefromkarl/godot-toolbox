@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "godot-toolbox"
+version = "0.1.0"
+description = "Composable Godot starter toolbox with curated plugin packs"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "gdtoolkit==4.5.0",
+    "pre-commit>=4,<5",
+]
+
+[tool.setuptools]
+py-modules = []

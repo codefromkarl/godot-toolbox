@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+.DS_Store
+
+godot/.godot/
+godot/.godot-mcp/
+godot/.godot-mcp-src/
