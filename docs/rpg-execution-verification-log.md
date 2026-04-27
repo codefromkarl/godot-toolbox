@@ -41,3 +41,67 @@ Remaining gaps:
 
 - `B0-integration-hardening` through `B7-final-acceptance-cleanup` are not complete.
 - Code tasks still require TDD-style red checks and green verification evidence before completion language can be upgraded.
+
+## 2026-04-27 B0 Integration Hardening
+
+Batch: `B0-integration-hardening`
+
+Tasks:
+
+- `RPG-I01`: RPG optional pack dry-run recipes.
+- `RPG-I02`: `save-state-lite,save-core` conflict validation.
+- `RPG-I03`: RPG vendor license / NOTICE summary.
+- `RPG-I04`: SaveState Lite `ResourceUID` patch policy.
+- `RPG-I05`: RPG-related pack matrix coverage in CI.
+
+Red check:
+
+- `rg -n -- "--packs=inventory,data-core,save-core|--packs=quest,data-core,save-core,rules-events-core|--packs=ai-behavior|--packs=save-state-lite" README.md docs/maintenance-workflow.md` showed README examples existed but `docs/maintenance-workflow.md` lacked RPG dry-run recipes.
+- Direct conflict selection returned exit status `1` with `[pack-manifest] ERROR: pack 'save-state-lite' conflicts with selected pack 'save-core'`, but `scripts/verify_specialized_pack_candidates.sh` did not exercise the conflict path itself.
+- `rg -n "License|NOTICE|GLoot|QuestSystem|Beehave|SaveState Lite" ...` showed pack README source summaries, but no complete license / NOTICE inventory.
+- `rg -n "ResourceUID|local patch|upstream" upstreams.lock.json packs/save-state-lite/README.md docs/maintenance-workflow.md` showed the patch reason existed in lock metadata, but no explicit locally maintained patch policy or update procedure.
+- `.github/workflows/ci.yml` did not run `bash ./scripts/verify_pack_matrix.sh --all`.
+
+Green check:
+
+- `python3 -m json.tool upstreams.lock.json >/dev/null && python3 -m json.tool packs.manifest.json >/dev/null && python3 scripts/pack_manifest.py validate`: exit `0`, `[pack-manifest] PASS`.
+- `bash -n scripts/*.sh templates/base/scripts/*.sh`: exit `0`.
+- `bash scripts/verify_specialized_pack_candidates.sh`: exit `0`, including direct `save-state-lite,save-core` conflict enforcement and vendor license / patch policy checks.
+- `bash scripts/verify_pack_matrix.sh --all`: exit `0`, wrote `outputs/verification/pack-matrix/latest.json`; Godot import printed known G.U.I.D.E resource leak warnings for input rows but the matrix passed.
+- `python3 -m json.tool outputs/verification/pack-matrix/latest.json >/dev/null`: exit `0`.
+- `python3 scripts/pack_manifest.py report --packs=inventory,data-core,save-core`: exit `0`.
+- `python3 scripts/pack_manifest.py report --packs=quest,data-core,save-core,rules-events-core`: exit `0`.
+- `python3 scripts/pack_manifest.py report --packs=ai-behavior`: exit `0`.
+- `python3 scripts/pack_manifest.py report --packs=save-state-lite`: exit `0`.
+- `./scripts/update_plugin_from_upstream.sh --id=gloot --dry-run`: exit `0`.
+- `./scripts/update_plugin_from_upstream.sh --id=quest_system --dry-run`: exit `0`.
+- `./scripts/update_plugin_from_upstream.sh --id=beehave --dry-run`: exit `0`.
+- `./scripts/update_plugin_from_upstream.sh --id=savestate_lite --dry-run`: exit `0`.
+
+Status: `verified`
+
+Commit: `chore: harden RPG optional pack integration`
+
+Artifacts:
+
+- `.github/workflows/ci.yml`
+- `docs/maintenance-workflow.md`
+- `docs/rpg-vendor-license-notice.md`
+- `packs/inventory/README.md`
+- `packs/quest/README.md`
+- `packs/ai-behavior/README.md`
+- `packs/save-state-lite/README.md`
+- `scripts/verify_specialized_pack_candidates.sh`
+- `upstreams.lock.json`
+- `outputs/verification/pack-matrix/latest.json` generated locally and ignored by Git.
+
+Cleanup receipt:
+
+- No generated Godot projects were committed.
+- `outputs/verification/pack-matrix/latest.json` remains an ignored local verification artifact.
+- Vibe was not used as implementation authority for this batch.
+
+Remaining gaps:
+
+- `B1-rpg-core-tdd` through `B7-final-acceptance-cleanup` remain incomplete.
+- `RPG-ready shell` and `complete RPG template` claims are still not allowed beyond the current integration-hardening evidence.

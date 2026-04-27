@@ -183,6 +183,60 @@
 - pack 是否存在，以 `packs.manifest.json` 为准
 - pack 在 manifest 中存在但目录缺失，应立即报错
 
+### RPG optional pack dry-run recipes
+
+RPG 相关 pack 先用 dry-run report 确认依赖、autoload、project settings 和冲突关系，再进入真实项目组装。
+
+Inventory / GLoot:
+
+```bash
+./scripts/bootstrap_toolbox_project.sh /tmp/preview \
+  --packs=inventory,data-core,save-core \
+  --dry-run-report
+```
+
+Expected active packs: `base,inventory,data-core,save-core`.
+
+Quest / QuestSystem:
+
+```bash
+./scripts/bootstrap_toolbox_project.sh /tmp/preview \
+  --packs=quest,data-core,save-core,rules-events-core \
+  --dry-run-report
+```
+
+Expected active packs: `base,quest,data-core,save-core,rules-events-core`.
+
+AI behavior / Beehave:
+
+```bash
+./scripts/bootstrap_toolbox_project.sh /tmp/preview \
+  --packs=ai-behavior \
+  --dry-run-report
+```
+
+Expected active packs: `base,ai-behavior`.
+
+SaveState Lite:
+
+```bash
+./scripts/bootstrap_toolbox_project.sh /tmp/preview \
+  --packs=save-state-lite \
+  --dry-run-report
+```
+
+Expected active packs: `base,save-state-lite`.
+
+Conflict check:
+
+```bash
+./scripts/bootstrap_toolbox_project.sh /tmp/preview \
+  --packs=save-state-lite,save-core \
+  --dry-run-report
+```
+
+Expected result: command fails because `save-state-lite` conflicts with `save-core`.
+
 ## E. 验证闭环
 
 每次维护至少跑下面三层：
@@ -250,6 +304,17 @@ bash ./scripts/verify_automation_pack_poc.sh
 
 ./scripts/update_plugin_from_upstream.sh --id=godot_e2e --dry-run
 ```
+
+RPG vendored optional packs use the same update path:
+
+```bash
+./scripts/update_plugin_from_upstream.sh --id=gloot --dry-run
+./scripts/update_plugin_from_upstream.sh --id=quest_system --dry-run
+./scripts/update_plugin_from_upstream.sh --id=beehave --dry-run
+./scripts/update_plugin_from_upstream.sh --id=savestate_lite --dry-run
+```
+
+Before updating `savestate_lite`, review `docs/rpg-vendor-license-notice.md` and preserve the locally maintained `ResourceUID` patch unless the target upstream version makes it unnecessary.
 
 ## F. 提交前检查
 

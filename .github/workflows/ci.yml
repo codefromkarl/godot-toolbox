@@ -46,3 +46,6 @@ jobs:
 
       - name: Verify bootstrap flow
         run: bash ./scripts/verify_bootstrap_flow.sh
+
+      - name: Verify pack matrix
+        run: bash ./scripts/verify_pack_matrix.sh --all

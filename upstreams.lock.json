@@ -225,7 +225,10 @@
       "patches": [
         {
           "path": "packs/save-state-lite/godot/addons/savestate/editor/save_browser_dock.gd",
-          "reason": "Guard ResourceUID lookup during headless bootstrap/import so missing UID registrations fall back to the vendored Lite SaveManager path without emitting engine errors."
+          "reason": "Guard ResourceUID lookup during headless bootstrap/import so missing UID registrations fall back to the vendored Lite SaveManager path without emitting engine errors.",
+          "policy": "locally maintained patch until upstream accepts an equivalent guard or removes the failing ResourceUID lookup path",
+          "preserve_on_update": true,
+          "verification": "bash ./scripts/verify_specialized_pack_candidates.sh && bash ./scripts/verify_pack_matrix.sh --row=save-state-lite"
         }
       ]
     },

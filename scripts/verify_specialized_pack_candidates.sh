@@ -85,6 +85,39 @@ for path in \
   [[ -f "${REPO_ROOT}/${path}" ]] || die "missing specialized pack file: ${path}"
 done
 
+log "checking save-state-lite/save-core conflict enforcement"
+CONFLICT_WORKDIR="$(mktemp -d "${TMPDIR:-/tmp}/godot-toolbox-save-conflict.XXXXXX")"
+CONFLICT_LOG="${CONFLICT_WORKDIR}/conflict.log"
+if bash "${REPO_ROOT}/scripts/bootstrap_toolbox_project.sh" \
+  "${CONFLICT_WORKDIR}/project" \
+  --packs=save-state-lite,save-core \
+  >"${CONFLICT_LOG}" 2>&1; then
+  rm -rf "${CONFLICT_WORKDIR}"
+  die "save-state-lite,save-core selection unexpectedly succeeded"
+fi
+grep -Fq "save-state-lite" "${CONFLICT_LOG}" \
+  || die "conflict output missing save-state-lite"
+grep -Fq "save-core" "${CONFLICT_LOG}" \
+  || die "conflict output missing save-core"
+grep -Fq "conflicts with selected pack" "${CONFLICT_LOG}" \
+  || die "conflict output missing clear conflict message"
+rm -rf "${CONFLICT_WORKDIR}"
+
+log "checking RPG vendor license and patch policy docs"
+for text in \
+  "GLoot" \
+  "QuestSystem" \
+  "Beehave" \
+  "SaveState Lite" \
+  "License" \
+  "NOTICE" \
+  "MIT" \
+  "ResourceUID" \
+  "locally maintained patch"; do
+  grep -Fq "${text}" "${REPO_ROOT}/docs/rpg-vendor-license-notice.md" \
+    || die "RPG vendor license/notice doc missing: ${text}"
+done
+
 log "checking candidate docs mention readiness boundaries"
 grep -Fq "Candidate Optional Packs" "${REPO_ROOT}/docs/open-source-architecture-links.md" \
   || die "open-source architecture links missing candidate section"

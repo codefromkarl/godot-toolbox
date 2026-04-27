@@ -8,6 +8,7 @@ Source:
 - Version: `v3.0.1`
 - Vendored subtree: `addons/gloot`
 - Local target: `packs/inventory/godot/addons/gloot`
+- License / NOTICE: MIT; see `docs/rpg-vendor-license-notice.md`
 
 Current boundaries:
 
@@ -18,4 +19,3 @@ Current boundaries:
 - Does not own RPG item truth, equipment rules, economy, loot rewards, or save format
 
 Use this pack when a project wants a mature inventory authoring/runtime surface, but keep project-owned adapters responsible for stable item IDs, inventory serialization, equipment stat contribution, and `save-core` snapshot mapping.
-

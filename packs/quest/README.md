@@ -8,6 +8,7 @@ Source:
 - Version: `2.0.1.4_4`
 - Vendored subtree: `addons/quest_system`
 - Local target: `packs/quest/godot/addons/quest_system`
+- License / NOTICE: MIT; see `docs/rpg-vendor-license-notice.md`
 
 Current boundaries:
 
@@ -18,4 +19,3 @@ Current boundaries:
 - Does not own campaign truth, quest save format, story state, or gameplay event semantics
 
 Use this pack when a project wants resource-based quests, but bridge quest state through toolbox-owned event and save contracts before treating it as durable project truth.
-
