@@ -165,3 +165,68 @@ Remaining gaps:
 
 - `B2-rpg-battle-core-tdd` through `B7-final-acceptance-cleanup` remain incomplete.
 - `RPG-ready shell` and `complete RPG template` claims remain disallowed until battle, save, UI/content, replay/event/state dump, and final acceptance evidence exist.
+
+## 2026-04-27 B2 RPG Battle Core TDD
+
+Batch: `B2-rpg-battle-core-tdd`
+
+Tasks:
+
+- `RPG-B01`: `rpg-battle-core` manifest/scaffold remains verified.
+- `RPG-B02`: `CombatantState`.
+- `RPG-B03`: `BattleSession`.
+- `RPG-B04`: `TurnQueue`.
+- `RPG-B05`: `BattleAction`, `SkillAction`, and `ItemAction`.
+- `RPG-B06`: `TargetRule`.
+- `RPG-B07`: `DamageFormula`.
+- `RPG-B08`: `BattleResult` and `RewardGrant`.
+- `RPG-B09`: deterministic enemy AI policy.
+- `RPG-B10`: optional Beehave adapter boundary.
+
+Red check:
+
+- Added `rpg_battle_core_smoke.gd`, `rpg_battle_beehave_adapter_smoke.gd`, and upgraded `scripts/verify_rpg_battle_core_pack.sh` before implementation.
+- `bash scripts/verify_rpg_battle_core_pack.sh`: exit `1`; failed because `combatant_state.gd`, `battle_session.gd`, `turn_queue.gd`, `battle_action.gd`, `skill_action.gd`, `item_action.gd`, `target_rule.gd`, `damage_formula.gd`, `reward_grant.gd`, and `deterministic_enemy_ai.gd` did not exist.
+- First implementation run failed on `target_rule.gd` using `self` as a static method name.
+- Second implementation run exited `0` but printed GDScript compile/runtime errors for typed inference and static calls, so it was rejected as invalid green evidence.
+- Third run exited `0` but printed Beehave vendored plugin teardown noise: `Capture not registered: 'beehave'`; verification script now filters only that known teardown noise and fails on any other `ERROR` or `SCRIPT ERROR`.
+
+Green check:
+
+- `bash scripts/verify_rpg_battle_core_pack.sh`: exit `0`, `[verify-rpg-battle-core] PASS`; covered battle domain smoke and optional Beehave adapter smoke.
+- `python3 scripts/pack_manifest.py validate`: exit `0`, `[pack-manifest] PASS`.
+- `bash -n scripts/*.sh templates/base/scripts/*.sh`: exit `0`.
+- `bash scripts/verify_rpg_core_pack.sh`: exit `0`, `[verify-rpg-core] PASS`.
+- `bash scripts/verify_rpg_test_kit_pack.sh`: exit `0`, `[verify-rpg-test-kit] PASS`.
+
+Status: `verified`
+
+Commit: `feat: implement RPG battle core contracts`
+
+Artifacts:
+
+- `packs/rpg-battle-core/godot/addons/godot_toolbox_architecture/rpg_battle_core/combat/combatant_state.gd`
+- `packs/rpg-battle-core/godot/addons/godot_toolbox_architecture/rpg_battle_core/battle/battle_session.gd`
+- `packs/rpg-battle-core/godot/addons/godot_toolbox_architecture/rpg_battle_core/battle/turn_queue.gd`
+- `packs/rpg-battle-core/godot/addons/godot_toolbox_architecture/rpg_battle_core/actions/battle_action.gd`
+- `packs/rpg-battle-core/godot/addons/godot_toolbox_architecture/rpg_battle_core/actions/skill_action.gd`
+- `packs/rpg-battle-core/godot/addons/godot_toolbox_architecture/rpg_battle_core/actions/item_action.gd`
+- `packs/rpg-battle-core/godot/addons/godot_toolbox_architecture/rpg_battle_core/targeting/target_rule.gd`
+- `packs/rpg-battle-core/godot/addons/godot_toolbox_architecture/rpg_battle_core/formula/damage_formula.gd`
+- `packs/rpg-battle-core/godot/addons/godot_toolbox_architecture/rpg_battle_core/results/battle_result.gd`
+- `packs/rpg-battle-core/godot/addons/godot_toolbox_architecture/rpg_battle_core/results/reward_grant.gd`
+- `packs/rpg-battle-core/godot/addons/godot_toolbox_architecture/rpg_battle_core/ai/deterministic_enemy_ai.gd`
+- `packs/rpg-battle-core/godot/addons/godot_toolbox_architecture/rpg_battle_core/adapters/beehave_ai_adapter.gd`
+- `packs/rpg-battle-core/godot/addons/godot_toolbox_architecture/rpg_battle_core/tests/rpg_battle_core_smoke.gd`
+- `packs/rpg-battle-core/godot/addons/godot_toolbox_architecture/rpg_battle_core/tests/rpg_battle_beehave_adapter_smoke.gd`
+- `scripts/verify_rpg_battle_core_pack.sh`
+
+Cleanup receipt:
+
+- No generated Godot projects or Beehave temporary logs remain under `/tmp/godot-toolbox-rpg-battle-*` or `/tmp/godot-toolbox-beehave.*.log`.
+- Vibe was not used as implementation authority for this batch.
+
+Remaining gaps:
+
+- `B3-rpg-save-adapter-tdd` through `B7-final-acceptance-cleanup` remain incomplete.
+- `RPG-ready shell` remains disallowed until save/reload preservation and later observability evidence exist.

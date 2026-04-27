@@ -3,7 +3,7 @@ class_name RPGBattleCoreService
 
 const PACK_ID := "rpg-battle-core"
 const REQUIRED_CONTRACTS: Array[StringName] = [&"rpg-core", &"flow-core", &"rules-events-core"]
-const PLANNED_CONTRACTS: Array[StringName] = [
+const IMPLEMENTED_CONTRACTS: Array[StringName] = [
 	&"CombatantState",
 	&"BattleSession",
 	&"TurnQueue",
@@ -15,6 +15,7 @@ const PLANNED_CONTRACTS: Array[StringName] = [
 	&"BattleResult",
 	&"RewardGrant",
 	&"DeterministicEnemyAI",
+	&"RPGBeehaveAIAdapter",
 ]
 
 
@@ -26,5 +27,5 @@ func required_contracts() -> Array[StringName]:
 	return REQUIRED_CONTRACTS.duplicate()
 
 
-func planned_contracts() -> Array[StringName]:
-	return PLANNED_CONTRACTS.duplicate()
+func implemented_contracts() -> Array[StringName]:
+	return IMPLEMENTED_CONTRACTS.duplicate()
