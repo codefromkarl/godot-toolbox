@@ -13,6 +13,7 @@
 - `stateful`：`Godot State Charts`
 - `juice`：`Sparkle Lite`
 - `automation`：`GodotE2E`，显式选择时提供运行时 UI/E2E 自动化入口，默认不启用
+- `input`：`G.U.I.D.E`，显式选择时提供跨设备输入映射与提示能力，默认不启用
 - `flow-core` / `simulation-core` / `data-core` / `save-core` / `flow-test-kit`：自研复杂游戏架构 scaffold，提供 flow、tick、data registry、save snapshot 与 flow smoke fixture 的最小合约
 
 另外保留一个**候选**方向：
@@ -47,6 +48,7 @@
 - `templates/base/`：基础项目模板
 - `packs/`：可选插件 pack
 - `packs/automation/`：`GodotE2E` 可选 pack，显式选择后注入 `AutomationServer` autoload 并提供 pytest E2E smoke
+- `packs/input/`：`G.U.I.D.E` 可选 pack，显式选择后注入 `GUIDE` autoload 并提供输入映射上下文能力
 - `packs/shell/`：候选 shell pack，当前仅锁定 `Maaack's Game Template` 上游与接入策略，不参与默认组装
 - `scripts/bootstrap_toolbox_project.sh`：按 pack 组装新项目
 - `scripts/verify_bootstrap_flow.sh`：验证真实产物链路，覆盖 bootstrap、headless import 和 `gdUnit4` smoke
@@ -94,6 +96,7 @@
 ```bash
 bash ./scripts/verify_toolbox_layout.sh
 bash ./scripts/verify_game_architecture_packs.sh
+bash ./scripts/verify_input_pack_poc.sh
 bash ./scripts/verify_bootstrap_flow.sh
 ```
 
@@ -152,5 +155,6 @@ bash ./scripts/verify_automation_pack_poc.sh
 - `Godot State Charts` 作为状态机/架构 pack
 - `Sparkle Lite` 作为表现层 pack
 - `GodotE2E` 作为显式 opt-in automation pack，不进入默认 bootstrap
+- `G.U.I.D.E` 作为显式 opt-in input pack，不进入默认 bootstrap
 - `gdterm` 不纳入工具箱
 - `UITextTokens Validator` 不原样纳入，后续应抽象成 repo-specific validator scaffold

@@ -28,7 +28,7 @@ The current toolbox already covers engineering quality, testing, validation, deb
 | --- | --- | --- | --- | --- |
 | `Maaack/Godot-Game-Template` | App shell, menus, options, pause, loading, credits | MIT, already vendored as candidate `shell` | Keep as candidate reference, do not default-enable | It covers shell features well but carries template-level assumptions about scenes, autoloads, saving, and state. |
 | `RandallLiuXin/godot-e2e` | Out-of-process E2E | Already vendored as candidate `automation` | Promote only after pack contract exists | It is valuable for flow-level tests, but needs controlled autoload/project setting injection. |
-| `godotneers/G.U.I.D.E` | Unified input | MIT, Godot Asset Library 0.12.0 | Candidate `input` pack | Strong reusable input abstraction across keyboard, mouse, gamepad, and touch. Keep optional. |
+| `godotneers/G.U.I.D.E` | Unified input | MIT, Godot Asset Library 0.12.0 | Landed non-default `input` pack | Strong reusable input abstraction across keyboard, mouse, gamepad, and touch. Keep optional. |
 | `nathanhoad/godot_dialogue_manager` | Dialogue | Godot 4.6+ addon; v4 warns it is not officially released yet | Candidate `dialogue` pack, defer promotion | Good stateless branching dialogue model, but version and release maturity should be watched. |
 | `shomykohai/quest-system` | Quests | MIT, Godot 4.4+ | Candidate `quest` pack or reference implementation | Resource-based quests, serialization/deserialization, localization, and GDUnit4 tests align with toolbox goals. |
 | `peter-kish/gloot` | Inventory | MIT, Godot 4.4+ | Candidate `inventory` pack, not base | Strong focused inventory system; too domain-specific for base. |
@@ -63,4 +63,3 @@ The current toolbox already covers engineering quality, testing, validation, deb
 The ecosystem already has good specialized addons. The missing piece for `godot-toolbox` is not more feature collection. It is a reusable architecture layer that decides how these addons plug into stable game-flow, simulation, data, save, and verification contracts.
 
 Direct vendoring should be conservative. The first toolbox-owned work should define pack contracts, flow contracts, simulation boundaries, data registries, save contracts, and flow-level test fixtures. After that, specialized addons can be optional packs.
-

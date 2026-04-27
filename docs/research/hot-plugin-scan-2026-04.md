@@ -18,7 +18,7 @@
 2. `G.U.I.D.E`
 3. `Dialogue Manager`
 
-后续落地状态：`GodotE2E` 已从 PoC 晋级为非默认 `automation` 可选 pack，仍不进入 `base` 或默认 bootstrap。
+后续落地状态：`GodotE2E` 已从 PoC 晋级为非默认 `automation` 可选 pack，`G.U.I.D.E` 已晋级为非默认 `input` 可选 pack；二者都不进入 `base` 或默认 bootstrap。
 
 另有一个已在后续接入为候选 shell pack 的模板来源：
 
@@ -157,7 +157,7 @@
 
 - `base` 暂不变
 - `automation/e2e` 已落地为显式 opt-in pack
-- 可以考虑新增 `ui-input` 候选 pack 方向
+- `ui-input` 已通过 `G.U.I.D.E` 落地为显式 opt-in `input` pack
 - `shell` 方向已通过 `Maaack's Game Template` 锁定为候选 vendored upstream，但仍不进入默认 bootstrap
 - `dialogue` 方向可以保留为第二梯队
 - `AI / MCP` 类插件暂不做 vendoring，只作为外部开发环境参考
@@ -175,7 +175,7 @@
 | 候选 | 优先级 | 分级 | 建议 |
 | --- | --- | --- | --- |
 | GodotE2E | P1 | optional pack | 已落地为非默认 `automation` pack |
-| G.U.I.D.E | P1 | new pack | 先做 `ui-input` PoC |
+| G.U.I.D.E | P1 | optional pack | 已落地为非默认 `input` pack |
 | Dialogue Manager | P2 | new pack | 放入 `dialogue` 候选池 |
 | LimboAI | P2 | external-reference | 先观察，不 vendoring |
 | Importality | P3 | external-reference | 记录为资源管线参考 |

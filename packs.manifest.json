@@ -233,6 +233,44 @@
       ]
     },
     {
+      "id": "input",
+      "kind": "optional-pack",
+      "default": false,
+      "plugins": [
+        "guide"
+      ],
+      "tooling": [],
+      "requires": [
+        "base"
+      ],
+      "conflicts": [],
+      "autoloads": [
+        {
+          "name": "GUIDE",
+          "path": "res://addons/guide/guide.gd",
+          "singleton": true
+        }
+      ],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/input/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [
+        "scripts/verify_input_pack_poc.sh"
+      ],
+      "godot_version": {
+        "min": "4.6"
+      },
+      "selection_rationale": "G.U.I.D.E 提供输入设备检测、映射上下文和提示图标能力，适合需要跨设备输入表达的项目；默认不启用，避免把输入建模成本带入所有 starter。",
+      "when_to_enable": [
+        "需要跨键鼠、手柄或触屏的输入映射上下文",
+        "需要 UI 输入提示、重映射或设备切换表达"
+      ]
+    },
+    {
       "id": "flow-core",
       "kind": "architecture-core",
       "default": false,
@@ -395,8 +433,8 @@
       "id": "guide",
       "pack_direction": "input",
       "url": "https://github.com/godotneers/G.U.I.D.E",
-      "status": "candidate-pack",
-      "absorption_mode": "optional vendored candidate after bootstrap injection contract"
+      "status": "optional-pack",
+      "absorption_mode": "vendored as non-default input pack with explicit bootstrap selection"
     },
     {
       "id": "quest_system",

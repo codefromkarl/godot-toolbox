@@ -207,6 +207,12 @@ python3 -m json.tool upstreams.lock.json >/dev/null
 bash ./scripts/verify_bootstrap_flow.sh
 ```
 
+如果本轮改动的是可选 `input` pack，再补：
+
+```bash
+bash ./scripts/verify_input_pack_poc.sh
+```
+
 如果本轮改动的是可选 `automation` pack，再补：
 
 ```bash

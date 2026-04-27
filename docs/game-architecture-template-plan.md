@@ -52,7 +52,7 @@ This prevents future projects from hiding core game truth inside a third-party p
 
 | Pack direction | Candidate source | Absorption mode | First decision |
 | --- | --- | --- | --- |
-| `input` | `G.U.I.D.E` | Optional vendored candidate | Good fit for unified input across devices. Needs bootstrap injection contract. |
+| `input` | `G.U.I.D.E` | Non-default optional pack | Good fit for unified input across devices. Bootstrap injection contract now exists. |
 | `quest` | `QuestSystem` | Optional vendored candidate or reference | Good resource-based quest model. Evaluate interop with toolbox save/data contracts first. |
 | `dialogue` | `Dialogue Manager` | Candidate, wait for v4 maturity | Strong stateless dialogue model. Do not promote until Godot 4.6+ requirement and release status are acceptable. |
 | `inventory` | `GLoot` | Optional vendored candidate | Useful for RPG/sim projects. Keep out of base. |
@@ -276,7 +276,7 @@ Deliverables:
 
 - Promote `automation` if Phase 0 pack injection supports its autoload requirements.
 - Keep `shell` candidate isolated until it can install only shell scenes without owning game flow truth.
-- Evaluate `G.U.I.D.E` as `input` pack.
+- Keep `G.U.I.D.E` as a non-default `input` pack and avoid making input modeling part of `base`.
 - Evaluate `QuestSystem` as `quest` pack against `save-core` and `data-core`.
 
 Exit criteria:

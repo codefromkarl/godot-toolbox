@@ -8,7 +8,7 @@ The links are also mirrored in `packs.manifest.json` under `open_source_referenc
 
 | Direction | Upstream | Link | Current repository action |
 | --- | --- | --- | --- |
-| `input` | G.U.I.D.E | <https://github.com/godotneers/G.U.I.D.E> | Candidate link only; wait for declarative input/project-setting injection. |
+| `input` | G.U.I.D.E | <https://github.com/godotneers/G.U.I.D.E> | Landed as non-default `input` pack; explicit opt-in only. |
 | `quest` | QuestSystem | <https://github.com/shomykohai/quest-system> | Candidate/reference; evaluate against `data-core` and `save-core`. |
 | `dialogue` | Dialogue Manager | <https://github.com/nathanhoad/godot_dialogue_manager> | Deferred candidate; watch Godot 4.6+ v4 maturity. |
 | `inventory` | GLoot | <https://github.com/peter-kish/gloot> | Candidate optional pack, never baseline. |
@@ -35,4 +35,3 @@ The current small functional integration is toolbox-owned rather than direct ven
 - `data-core` provides stable IDs and a registry scaffold for future quest/dialogue/inventory integration.
 - `save-core` provides versioned snapshots and atomic JSON writes.
 - `flow-test-kit` provides a runner-agnostic smoke fixture for mode/result payload checks.
-

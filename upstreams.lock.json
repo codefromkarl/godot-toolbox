@@ -130,15 +130,18 @@
     },
     {
       "id": "guide",
-      "kind": "reference",
+      "kind": "plugin",
       "source": {
         "type": "git",
-        "url": "https://github.com/godotneers/G.U.I.D.E"
+        "url": "https://github.com/godotneers/G.U.I.D.E.git",
+        "version": "0.12.0",
+        "ref": "v0.12.0"
       },
       "integration": {
-        "mode": "candidate-reference",
-        "target": "packs/input",
-        "note": "Candidate input pack link only; do not vendor until bootstrap injection contract and version lock are decided."
+        "mode": "vendor-subtree",
+        "target": "packs/input/godot/addons/guide",
+        "note": "Optional input pack source; vendored for explicit --packs=input bootstrap, not default.",
+        "source_subdir": "addons/guide"
       },
       "patches": []
     },
