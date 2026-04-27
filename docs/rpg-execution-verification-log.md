@@ -157,7 +157,7 @@ Artifacts:
 
 Cleanup receipt:
 
-- Timeout-created temp dirs `/tmp/godot-toolbox-rpg-core.OmCGGu` and `/tmp/godot-toolbox-rpg-core-adapter.d9bFA9` were removed.
+- Timeout-created RPG core temp workspaces were removed.
 - No generated Godot project or verification output artifact is staged for commit.
 - Vibe was not used as implementation authority for this batch.
 
@@ -223,7 +223,7 @@ Artifacts:
 
 Cleanup receipt:
 
-- No generated Godot projects or Beehave temporary logs remain under `/tmp/godot-toolbox-rpg-battle-*` or `/tmp/godot-toolbox-beehave.*.log`.
+- No generated Godot projects or Beehave temporary logs remain under the verifier temp workspace patterns.
 - Vibe was not used as implementation authority for this batch.
 
 Remaining gaps:
@@ -277,7 +277,7 @@ Artifacts:
 
 Cleanup receipt:
 
-- No generated Godot projects or temporary quest logs remain under `/tmp/godot-toolbox-rpg-save-*` or `/tmp/godot-toolbox-quest.*.log`.
+- No generated Godot projects or temporary quest logs remain under the verifier temp workspace patterns.
 - Vibe was not used as implementation authority for this batch.
 
 Remaining gaps:
@@ -335,7 +335,7 @@ Artifacts:
 
 Cleanup receipt:
 
-- No generated Godot projects remain under `/tmp/godot-toolbox-rpg-ui.*`.
+- No generated Godot projects remain under the RPG UI verifier temp workspace pattern.
 - Vibe was not used as implementation authority for this batch.
 
 Remaining gaps:
@@ -393,8 +393,8 @@ Artifacts:
 
 Cleanup receipt:
 
-- Timeout-created temp dir `/tmp/godot-toolbox-rpg-observability.w5XkYH` was removed.
-- No generated Godot projects remain under `/tmp/godot-toolbox-rpg-observability.*`.
+- The timeout-created RPG observability temp workspace was removed.
+- No generated Godot projects remain under the RPG observability verifier temp workspace pattern.
 - Vibe was not used as implementation authority for this batch.
 
 Remaining gaps:
@@ -492,8 +492,8 @@ Artifacts:
 
 Cleanup receipt:
 
-- No generated RPG temp dirs remain under `/tmp/godot-toolbox-rpg-*`.
-- No Beehave or Quest temporary log files remain under `/tmp/godot-toolbox-beehave.*.log` or `/tmp/godot-toolbox-quest.*.log`.
+- No generated RPG temp workspaces remain under the verifier temp workspace patterns.
+- No Beehave or Quest temporary log files remain under their verifier temp log patterns.
 - `outputs/verification/pack-matrix/latest.json` remains ignored and uncommitted.
 - Vibe was not used as implementation authority for this final cleanup.
 
@@ -501,3 +501,92 @@ Remaining gaps:
 
 - No frozen `RPG-I/C/B/S/U/T/D` task remains open in this receipt.
 - Experience-layer playability/release claims still require separate human/AI-assisted review if the project wants to publish those claims.
+
+## 2026-04-27 Follow-up Template Productization
+
+Batch: `follow-up-rpg-template-productization`
+
+Tasks:
+
+- Add a user-executable minimal RPG template recipe entrypoint.
+- Add a script verifier that protects recipe pack ids, commands, conflict boundaries, and completion-language boundaries.
+- Link the quickstart from the existing RPG recipe index and README without rewriting broader README content.
+
+Red check:
+
+- Added `scripts/verify_rpg_template_recipe.sh` before the quickstart.
+- `bash scripts/verify_rpg_template_recipe.sh`: exit `1`; failed because `docs/rpg-template-quickstart.md` did not exist.
+
+Green check:
+
+- `bash scripts/verify_rpg_template_recipe.sh`: validates `docs/rpg-template-quickstart.md`, `docs/rpg-pack-recipes.md`, README linkage, `save-state-lite` / `save-core` conflict language, manifest resolution for the minimal recipe, and completion-language boundaries.
+- `python3 scripts/pack_manifest.py validate`: keeps the pack manifest as the authoritative pack id source.
+- `bash -n scripts/*.sh templates/base/scripts/*.sh`: keeps shell verifier syntax covered.
+
+Status: `verified_follow_up`
+
+Artifacts:
+
+- `docs/rpg-template-quickstart.md`
+- `docs/rpg-pack-recipes.md`
+- `README.md`
+- `scripts/verify_rpg_template_recipe.sh`
+- `docs/rpg-execution-verification-log.md`
+
+Cleanup receipt:
+
+- This follow-up only adds documentation and a repository-local verifier.
+- No generated Godot project is committed.
+- `docs/rpg-final-acceptance-receipt.md`, `docs/rpg-experience-review.md`, and `packs/**` are not part of this follow-up write scope.
+
+Remaining gaps:
+
+- This quickstart supports adoption and verification of the RPG-ready shell and automated Interaction evidence.
+- It does not create Experience-layer, playable, or release-ready claims.
+
+## 2026-04-27 Follow-up RPG Edge-Case Verification Hardening
+
+Batch: `follow-up-rpg-edge-case-verification-hardening`
+
+Tasks:
+
+- Add real edge/regression verification beyond file-existence checks, planned contracts, or sentinel-only completion evidence.
+- Cover battle formula / turn queue / deterministic AI boundary inputs.
+- Cover malformed RPG save payloads, schema version handling, and missing inventory/equipment/quest fields.
+- Cover RPG sample content reference integrity and non-empty collection invariants.
+- Cover rpg-test-kit replay determinism and state dump empty-state schema behavior.
+
+Red check:
+
+- `bash scripts/verify_rpg_edge_cases.sh`: exit `127`; failed because `scripts/verify_rpg_edge_cases.sh` did not exist.
+
+Green check:
+
+- `bash scripts/verify_rpg_edge_cases.sh`: exit `0`, `[verify-rpg-edge] PASS`.
+- Edge verifier observed structured output lines from the smoke scripts: `RPG_EDGE_STATIC_OK files=4 content_ids=<observed>`, `RPG_EDGE_BATTLE_OK formula_min=1 heal_negative=0 queue=alpha,beta,slow ai_empty=0`, `RPG_EDGE_SAVE_OK migrated_schema=<observed> malformed_errors=<observed> unsupported_schema=-1`, `RPG_EDGE_CONTENT_OK heroes=<observed> enemies=<observed> skills=<observed> items=<observed> equipment=<observed>`, and `RPG_EDGE_TEST_KIT_OK replay_events=<observed> dump_inventory=<observed> dump_events=<observed>`.
+- `bash -n scripts/*.sh templates/base/scripts/*.sh`: exit `0`.
+- `bash scripts/verify_rpg_battle_core_pack.sh`: exit `0`, `[verify-rpg-battle-core] PASS`.
+- `bash scripts/verify_rpg_save_adapter_pack.sh`: exit `0`, `[verify-rpg-save-adapter] PASS`.
+- `bash scripts/verify_rpg_test_kit_pack.sh`: exit `0`, `[verify-rpg-test-kit] PASS`.
+
+Status: `verified_follow_up`
+
+Artifacts:
+
+- `scripts/verify_rpg_edge_cases.sh`
+- `packs/rpg-battle-core/godot/addons/godot_toolbox_architecture/rpg_battle_core/tests/rpg_battle_edge_cases.gd`
+- `packs/rpg-battle-core/godot/addons/godot_toolbox_architecture/rpg_battle_core/tests/rpg_example_content_edge_cases.gd`
+- `packs/rpg-save-adapter/godot/addons/godot_toolbox_architecture/rpg_save_adapter/tests/rpg_save_edge_cases.gd`
+- `packs/rpg-test-kit/godot/addons/godot_toolbox_architecture/rpg_test_kit/tests/rpg_test_kit_edge_cases.gd`
+- `docs/rpg-execution-verification-log.md`
+
+Cleanup receipt:
+
+- `scripts/verify_rpg_edge_cases.sh` removed its generated RPG edge bootstrap workspace and temporary Godot log files before exit.
+- The rerun battle, save-adapter, and test-kit verifiers completed their own cleanup traps for generated RPG temp workspaces.
+- No core runtime code, final acceptance receipt, README, or experience review document was modified by this follow-up.
+
+Remaining gaps:
+
+- This follow-up strengthens automated edge evidence only.
+- It does not add new Experience-layer, playable, release-ready, or human review claims.

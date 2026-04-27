@@ -8,7 +8,11 @@ This receipt closes the frozen RPG scope from `docs/rpg-template-absorption-plan
 
 - `RPG-ready shell evidence exists`: allowed at Runtime layer.
 - `complete RPG template evidence exists`: allowed at automated Interaction evidence layer.
-- `playable`, `release-ready`, or Experience-layer claims still require human/AI-assisted review notes outside this receipt.
+- `playable`, `release-ready`, or Experience-layer claims still require human/AI-assisted review notes outside this receipt; use `docs/rpg-experience-review.md` as the Experience review carrier.
+
+## Experience Review Boundary
+
+`docs/rpg-experience-review.md` records the AI-assisted/human playtest schema and the initial review based on existing automated evidence. That document may collect Experience evidence, but this final receipt remains limited to Runtime and automated Interaction evidence and does not claim `playable` or `release-ready`.
 
 ## Task Status Matrix
 

@@ -95,7 +95,7 @@
 预览某组 pack 会注入哪些 autoload、project settings 和验证入口：
 
 ```bash
-./scripts/bootstrap_toolbox_project.sh /tmp/preview \
+./scripts/bootstrap_toolbox_project.sh ../godot-toolbox-preview \
   --packs=flow-core,simulation-core,data-core,save-core,flow-test-kit \
   --dry-run-report
 ```
@@ -103,19 +103,19 @@
 RPG 相关 opt-in pack 建议先用 dry-run report 确认依赖、autoload 和冲突关系：
 
 ```bash
-./scripts/bootstrap_toolbox_project.sh /tmp/preview \
+./scripts/bootstrap_toolbox_project.sh ../godot-toolbox-preview \
   --packs=inventory,data-core,save-core \
   --dry-run-report
 
-./scripts/bootstrap_toolbox_project.sh /tmp/preview \
+./scripts/bootstrap_toolbox_project.sh ../godot-toolbox-preview \
   --packs=quest,data-core,save-core,rules-events-core \
   --dry-run-report
 
-./scripts/bootstrap_toolbox_project.sh /tmp/preview \
+./scripts/bootstrap_toolbox_project.sh ../godot-toolbox-preview \
   --packs=ai-behavior \
   --dry-run-report
 
-./scripts/bootstrap_toolbox_project.sh /tmp/preview \
+./scripts/bootstrap_toolbox_project.sh ../godot-toolbox-preview \
   --packs=save-state-lite \
   --dry-run-report
 ```
@@ -208,10 +208,12 @@ RPG 相关第三方来源、vendor 版本、本地路径、吸收边界和后续
 - `docs/rpg-implementation-execution-plan.md`
 - `docs/rpg-execution-verification-log.md`
 - `docs/rpg-acceptance-matrix.md`
+- `docs/rpg-template-quickstart.md`
 - `docs/rpg-pack-recipes.md`
 - `docs/rpg-adapter-boundaries.md`
 - `docs/rpg-vendor-upgrade-checklist.md`
 - `docs/rpg-vendor-license-notice.md`
+- `docs/rpg-experience-review.md`
 
 当前已吸收为非默认 pack 的来源包括：
 
@@ -222,4 +224,4 @@ RPG 相关第三方来源、vendor 版本、本地路径、吸收边界和后续
 
 RPG 核心规则已开始自研落地，包括 `rpg-core`、`rpg-battle-core`、`rpg-save-adapter` 和 `rpg-test-kit`。这些内容负责角色成长、战斗规则、奖励、队伍状态和存档格式，不应由第三方插件直接持有项目真相。
 
-当前 `RPG-ready shell evidence exists` 的依据是 `verify_rpg_core_pack.sh`、`verify_rpg_battle_core_pack.sh`、`verify_rpg_save_adapter_pack.sh`、`verify_rpg_ui_content.sh` 和 `verify_rpg_observability.sh` 的组合证据。`complete RPG template` 仍受 `docs/rpg-acceptance-matrix.md` 的完成语言约束，最终声明必须等完整 verification log 和 cleanup receipt 对齐后再发布。
+当前 `RPG-ready shell evidence exists` 的依据是 `verify_rpg_core_pack.sh`、`verify_rpg_battle_core_pack.sh`、`verify_rpg_save_adapter_pack.sh`、`verify_rpg_ui_content.sh` 和 `verify_rpg_observability.sh` 的组合证据。`complete RPG template evidence exists` 仅限 automated Interaction 层；`playable`、`release-ready` 或 Experience claim 必须另见 `docs/rpg-experience-review.md` 中的人类/AI-assisted 审查记录。

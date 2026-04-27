@@ -2,10 +2,12 @@
 
 These recipes are executable dry-run entrypoints for RPG project assembly. Use them before generating a real project so dependencies, autoloads, project settings, verification entries, and conflicts are visible.
 
+For the minimal productized RPG template path, start with `docs/rpg-template-quickstart.md`; this page keeps the individual pack combination recipes.
+
 ## Minimal RPG Battle Shell
 
 ```bash
-./scripts/bootstrap_toolbox_project.sh /tmp/preview \
+./scripts/bootstrap_toolbox_project.sh ../godot-toolbox-rpg-preview \
   --packs=rpg-battle-core,rpg-core,rpg-save-adapter,rpg-test-kit,flow-core,rules-events-core,data-core,save-core \
   --dry-run-report
 ```
@@ -21,7 +23,7 @@ Expected boundaries:
 ## RPG With Inventory Authoring
 
 ```bash
-./scripts/bootstrap_toolbox_project.sh /tmp/preview \
+./scripts/bootstrap_toolbox_project.sh ../godot-toolbox-rpg-preview \
   --packs=inventory,data-core,save-core,rpg-core,rpg-save-adapter,rules-events-core \
   --dry-run-report
 ```
@@ -31,7 +33,7 @@ Use when a project wants GLoot authoring/runtime primitives while keeping stable
 ## RPG With Quest Authoring
 
 ```bash
-./scripts/bootstrap_toolbox_project.sh /tmp/preview \
+./scripts/bootstrap_toolbox_project.sh ../godot-toolbox-rpg-preview \
   --packs=quest,data-core,save-core,rules-events-core,rpg-save-adapter,rpg-core \
   --dry-run-report
 ```
@@ -41,7 +43,7 @@ Use when a project wants QuestSystem resources while mapping quest progress thro
 ## RPG With Behavior-Tree AI
 
 ```bash
-./scripts/bootstrap_toolbox_project.sh /tmp/preview \
+./scripts/bootstrap_toolbox_project.sh ../godot-toolbox-rpg-preview \
   --packs=ai-behavior,rpg-battle-core,rpg-core,flow-core,rules-events-core,data-core,save-core \
   --dry-run-report
 ```
@@ -51,7 +53,7 @@ Use when project enemy/NPC AI needs Beehave behavior-tree authoring. The default
 ## SaveState Lite As Alternative Save Tooling
 
 ```bash
-./scripts/bootstrap_toolbox_project.sh /tmp/preview \
+./scripts/bootstrap_toolbox_project.sh ../godot-toolbox-rpg-preview \
   --packs=save-state-lite \
   --dry-run-report
 ```
