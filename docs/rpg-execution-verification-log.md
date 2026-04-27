@@ -401,3 +401,48 @@ Remaining gaps:
 
 - `B6-doc-governance` and `B7-final-acceptance-cleanup` remain incomplete.
 - `complete RPG template` claim remains disallowed until documentation governance and final cleanup receipt are complete.
+
+## 2026-04-27 B6 Documentation Governance
+
+Batch: `B6-doc-governance`
+
+Tasks:
+
+- `RPG-D01`: RPG template README section.
+- `RPG-D02`: RPG pack selection recipes.
+- `RPG-D03`: source boundary docs for every adapter.
+- `RPG-D04`: upgrade checklist for vendored RPG packs.
+
+Red check:
+
+- Added `scripts/verify_rpg_docs_governance.sh` before implementation.
+- `bash scripts/verify_rpg_docs_governance.sh`: exit `1`; failed because `docs/rpg-pack-recipes.md` did not exist.
+- First green attempt failed because the inventory + `rpg-save-adapter` recipe omitted `rules-events-core`, which `rpg-save-adapter` requires.
+
+Green check:
+
+- `bash scripts/verify_rpg_docs_governance.sh`: exit `0`, `[verify-rpg-docs] PASS`; covered README RPG links and claim boundaries, dry-run recipe pack sets, adapter boundary docs, and vendor upgrade checklist.
+- `python3 scripts/pack_manifest.py validate`: exit `0`, `[pack-manifest] PASS`.
+- `bash -n scripts/*.sh templates/base/scripts/*.sh`: exit `0`.
+
+Status: `verified`
+
+Commit: `docs: add RPG governance docs`
+
+Artifacts:
+
+- `README.md`
+- `docs/rpg-pack-recipes.md`
+- `docs/rpg-adapter-boundaries.md`
+- `docs/rpg-vendor-upgrade-checklist.md`
+- `scripts/verify_rpg_docs_governance.sh`
+
+Cleanup receipt:
+
+- No generated Godot projects were created by this batch.
+- Vibe was not used as implementation authority for this batch.
+
+Remaining gaps:
+
+- `B7-final-acceptance-cleanup` remains incomplete.
+- Final completion still requires full verification chain, task status matrix, implementation evidence, verification commands, and cleanup receipt.

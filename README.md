@@ -205,6 +205,13 @@ bash ./scripts/verify_automation_pack_poc.sh
 RPG 相关第三方来源、vendor 版本、本地路径、吸收边界和后续任务清单见：
 
 - `docs/rpg-template-absorption-plan.md`
+- `docs/rpg-implementation-execution-plan.md`
+- `docs/rpg-execution-verification-log.md`
+- `docs/rpg-acceptance-matrix.md`
+- `docs/rpg-pack-recipes.md`
+- `docs/rpg-adapter-boundaries.md`
+- `docs/rpg-vendor-upgrade-checklist.md`
+- `docs/rpg-vendor-license-notice.md`
 
 当前已吸收为非默认 pack 的来源包括：
 
@@ -213,4 +220,6 @@ RPG 相关第三方来源、vendor 版本、本地路径、吸收边界和后续
 - `Beehave`：<https://github.com/bitbrain/beehave>
 - `SaveState Lite`：<https://github.com/youssof20/savestate>
 
-RPG 核心规则仍计划自研，包括 `rpg-core`、`rpg-battle-core`、`rpg-save-adapter` 和 `rpg-test-kit`。这些内容负责角色成长、战斗规则、奖励、队伍状态和存档格式，不应由第三方插件直接持有项目真相。
+RPG 核心规则已开始自研落地，包括 `rpg-core`、`rpg-battle-core`、`rpg-save-adapter` 和 `rpg-test-kit`。这些内容负责角色成长、战斗规则、奖励、队伍状态和存档格式，不应由第三方插件直接持有项目真相。
+
+当前 `RPG-ready shell evidence exists` 的依据是 `verify_rpg_core_pack.sh`、`verify_rpg_battle_core_pack.sh`、`verify_rpg_save_adapter_pack.sh`、`verify_rpg_ui_content.sh` 和 `verify_rpg_observability.sh` 的组合证据。`complete RPG template` 仍受 `docs/rpg-acceptance-matrix.md` 的完成语言约束，最终声明必须等完整 verification log 和 cleanup receipt 对齐后再发布。
