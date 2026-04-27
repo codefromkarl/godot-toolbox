@@ -446,3 +446,58 @@ Remaining gaps:
 
 - `B7-final-acceptance-cleanup` remains incomplete.
 - Final completion still requires full verification chain, task status matrix, implementation evidence, verification commands, and cleanup receipt.
+
+## 2026-04-27 B7 Final Acceptance Cleanup
+
+Batch: `B7-final-acceptance-cleanup`
+
+Tasks:
+
+- Produce final task status matrix.
+- Produce implementation evidence.
+- Produce verification command list.
+- Produce cleanup receipt.
+
+Red check:
+
+- Added `scripts/verify_rpg_final_acceptance.sh` before the final receipt.
+- `bash scripts/verify_rpg_final_acceptance.sh`: exit `1`; failed because `docs/rpg-final-acceptance-receipt.md` did not exist.
+
+Green check:
+
+- `python3 scripts/pack_manifest.py validate`: exit `0`, `[pack-manifest] PASS`.
+- `bash -n scripts/*.sh templates/base/scripts/*.sh`: exit `0`.
+- `bash scripts/verify_specialized_pack_candidates.sh`: exit `0`, `[verify-specialized-candidates] PASS`.
+- `bash scripts/verify_rpg_core_pack.sh`: exit `0`, `[verify-rpg-core] PASS`.
+- `bash scripts/verify_rpg_battle_core_pack.sh`: exit `0`, `[verify-rpg-battle-core] PASS`.
+- `bash scripts/verify_rpg_save_adapter_pack.sh`: exit `0`, `[verify-rpg-save-adapter] PASS`.
+- `bash scripts/verify_rpg_ui_content.sh`: exit `0`, `[verify-rpg-ui-content] PASS`.
+- `bash scripts/verify_rpg_observability.sh`: exit `0`, `[verify-rpg-observability] PASS`.
+- `bash scripts/verify_rpg_docs_governance.sh`: exit `0`, `[verify-rpg-docs] PASS`.
+- `bash scripts/verify_rpg_test_kit_pack.sh`: exit `0`, `[verify-rpg-test-kit] PASS`.
+- `bash scripts/verify_pack_matrix.sh --all`: exit `0`, `[verify-pack-matrix] PASS`; known third-party `input` row resource-leak warnings appeared but did not fail the matrix.
+- `python3 -m json.tool outputs/verification/pack-matrix/latest.json >/dev/null`: exit `0`.
+- `bash scripts/verify_rpg_final_acceptance.sh`: exit `0`, `[verify-rpg-final] PASS`.
+- `python3 scripts/check_rpg_readiness.py`: exit `0`, readiness scaffold signal still treated as supporting evidence only.
+
+Status: `verified`
+
+Commit: `docs: add RPG final acceptance receipt`
+
+Artifacts:
+
+- `docs/rpg-final-acceptance-receipt.md`
+- `scripts/verify_rpg_final_acceptance.sh`
+- `docs/rpg-execution-verification-log.md`
+
+Cleanup receipt:
+
+- No generated RPG temp dirs remain under `/tmp/godot-toolbox-rpg-*`.
+- No Beehave or Quest temporary log files remain under `/tmp/godot-toolbox-beehave.*.log` or `/tmp/godot-toolbox-quest.*.log`.
+- `outputs/verification/pack-matrix/latest.json` remains ignored and uncommitted.
+- Vibe was not used as implementation authority for this final cleanup.
+
+Remaining gaps:
+
+- No frozen `RPG-I/C/B/S/U/T/D` task remains open in this receipt.
+- Experience-layer playability/release claims still require separate human/AI-assisted review if the project wants to publish those claims.
