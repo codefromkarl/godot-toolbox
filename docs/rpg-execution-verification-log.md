@@ -105,3 +105,63 @@ Remaining gaps:
 
 - `B1-rpg-core-tdd` through `B7-final-acceptance-cleanup` remain incomplete.
 - `RPG-ready shell` and `complete RPG template` claims are still not allowed beyond the current integration-hardening evidence.
+
+## 2026-04-27 B1 RPG Core TDD
+
+Batch: `B1-rpg-core-tdd`
+
+Tasks:
+
+- `RPG-C01`: `rpg-core` manifest/scaffold remains verified.
+- `RPG-C02`: `StatBlock` and `StatModifier`.
+- `RPG-C03`: `LevelCurve`.
+- `RPG-C04`: `CharacterData` and `CharacterState`.
+- `RPG-C05`: `PartyState` and `Wallet`.
+- `RPG-C06`: `ItemRef`, `EquipmentSlot`, and `EquipmentLoadout`.
+- `RPG-C07`: optional GLoot adapter boundary.
+
+Red check:
+
+- Added `rpg_core_domain_smoke.gd`, `rpg_core_gloot_adapter_smoke.gd`, and upgraded `scripts/verify_rpg_core_pack.sh` before implementation.
+- `bash scripts/verify_rpg_core_pack.sh`: exit `1`; failed because `stat_block.gd`, `stat_modifier.gd`, `level_curve.gd`, `character_data.gd`, `character_state.gd`, `party_state.gd`, `wallet.gd`, `item_ref.gd`, `equipment_slot.gd`, and `equipment_loadout.gd` did not exist.
+- First green attempt then failed on expected GDScript details: stat rounding expectation and typed Array assignments.
+- Second green attempt passed domain smoke and then failed adapter smoke on typed Array assignment; the script error happened before `quit()`, causing a 180 second command timeout. The leaked temp dirs were removed manually.
+
+Green check:
+
+- `bash scripts/verify_rpg_core_pack.sh`: exit `0`, `[verify-rpg-core] PASS`; covered domain smoke and GLoot adapter smoke.
+- `python3 scripts/pack_manifest.py validate`: exit `0`, `[pack-manifest] PASS`.
+- `bash -n scripts/*.sh templates/base/scripts/*.sh`: exit `0`.
+- `bash scripts/verify_rpg_test_kit_pack.sh`: exit `0`, `[verify-rpg-test-kit] PASS`.
+
+Status: `verified`
+
+Commit: `feat: implement RPG core domain contracts`
+
+Artifacts:
+
+- `packs/rpg-core/godot/addons/godot_toolbox_architecture/rpg_core/stats/stat_block.gd`
+- `packs/rpg-core/godot/addons/godot_toolbox_architecture/rpg_core/stats/stat_modifier.gd`
+- `packs/rpg-core/godot/addons/godot_toolbox_architecture/rpg_core/progression/level_curve.gd`
+- `packs/rpg-core/godot/addons/godot_toolbox_architecture/rpg_core/characters/character_data.gd`
+- `packs/rpg-core/godot/addons/godot_toolbox_architecture/rpg_core/characters/character_state.gd`
+- `packs/rpg-core/godot/addons/godot_toolbox_architecture/rpg_core/party/party_state.gd`
+- `packs/rpg-core/godot/addons/godot_toolbox_architecture/rpg_core/party/wallet.gd`
+- `packs/rpg-core/godot/addons/godot_toolbox_architecture/rpg_core/items/item_ref.gd`
+- `packs/rpg-core/godot/addons/godot_toolbox_architecture/rpg_core/equipment/equipment_slot.gd`
+- `packs/rpg-core/godot/addons/godot_toolbox_architecture/rpg_core/equipment/equipment_loadout.gd`
+- `packs/rpg-core/godot/addons/godot_toolbox_architecture/rpg_core/adapters/gloot_adapter.gd`
+- `packs/rpg-core/godot/addons/godot_toolbox_architecture/rpg_core/tests/rpg_core_domain_smoke.gd`
+- `packs/rpg-core/godot/addons/godot_toolbox_architecture/rpg_core/tests/rpg_core_gloot_adapter_smoke.gd`
+- `scripts/verify_rpg_core_pack.sh`
+
+Cleanup receipt:
+
+- Timeout-created temp dirs `/tmp/godot-toolbox-rpg-core.OmCGGu` and `/tmp/godot-toolbox-rpg-core-adapter.d9bFA9` were removed.
+- No generated Godot project or verification output artifact is staged for commit.
+- Vibe was not used as implementation authority for this batch.
+
+Remaining gaps:
+
+- `B2-rpg-battle-core-tdd` through `B7-final-acceptance-cleanup` remain incomplete.
+- `RPG-ready shell` and `complete RPG template` claims remain disallowed until battle, save, UI/content, replay/event/state dump, and final acceptance evidence exist.
