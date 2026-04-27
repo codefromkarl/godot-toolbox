@@ -136,6 +136,7 @@ required_files=(
   "godot/addons/godot_toolbox_architecture/save_core/save_core.gd"
   "godot/addons/godot_toolbox_architecture/save_core/tests/save_core_smoke.gd"
   "godot/addons/godot_toolbox_architecture/flow_test_kit/flow_smoke_fixture.gd"
+  "godot/addons/godot_toolbox_architecture/flow_test_kit/architecture_spine_smoke.gd"
   "godot/test/gdunit/flow_core_smoke_test.gd"
 )
 
@@ -158,5 +159,9 @@ log "running data-core headless smoke"
 log "running save-core headless smoke"
 "${GODOT_BIN}" --headless --path "${WORKDIR}/godot" \
   --script res://addons/godot_toolbox_architecture/save_core/tests/save_core_smoke.gd
+
+log "running architecture spine integration smoke"
+"${GODOT_BIN}" --headless --path "${WORKDIR}/godot" \
+  --script res://addons/godot_toolbox_architecture/flow_test_kit/architecture_spine_smoke.gd
 
 log "PASS"

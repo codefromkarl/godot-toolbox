@@ -401,6 +401,103 @@
       "selection_rationale": "自研 versioned snapshot/save-slot 边界，参考 SaveState/GDQuest/Godot 文档但不保存任意 scene tree。"
     },
     {
+      "id": "rpg-core",
+      "kind": "architecture-core",
+      "default": false,
+      "plugins": [],
+      "tooling": [],
+      "requires": [
+        "base",
+        "data-core",
+        "save-core"
+      ],
+      "conflicts": [],
+      "autoloads": [
+        {
+          "name": "RPGCore",
+          "path": "res://addons/godot_toolbox_architecture/rpg_core/rpg_core.gd",
+          "singleton": true
+        }
+      ],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/rpg_core/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [
+        "scripts/verify_rpg_core_pack.sh"
+      ],
+      "godot_version": {
+        "min": "4.6"
+      },
+      "selection_rationale": "自研 RPG state/data contract pack，持有角色、属性、队伍、钱包和装备引用边界，不把 RPG 真相交给第三方 inventory/quest 插件。"
+    },
+    {
+      "id": "rpg-battle-core",
+      "kind": "architecture-core",
+      "default": false,
+      "plugins": [],
+      "tooling": [],
+      "requires": [
+        "base",
+        "rpg-core",
+        "flow-core",
+        "rules-events-core"
+      ],
+      "conflicts": [],
+      "autoloads": [
+        {
+          "name": "RPGBattleCore",
+          "path": "res://addons/godot_toolbox_architecture/rpg_battle_core/rpg_battle_core.gd",
+          "singleton": true
+        }
+      ],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/rpg_battle_core/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [
+        "scripts/verify_rpg_battle_core_pack.sh"
+      ],
+      "godot_version": {
+        "min": "4.6"
+      },
+      "selection_rationale": "自研 deterministic turn-based battle contract pack，依赖 rpg-core 的角色状态、flow-core 的模式边界和 rules-events-core 的事件边界，不依赖 Beehave 才能运行最小战斗。"
+    },
+    {
+      "id": "rpg-test-kit",
+      "kind": "architecture-test-kit",
+      "default": false,
+      "plugins": [],
+      "tooling": [],
+      "requires": [
+        "base",
+        "rpg-core",
+        "rpg-battle-core"
+      ],
+      "conflicts": [],
+      "autoloads": [],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/rpg_test_kit/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [
+        "scripts/verify_rpg_test_kit_pack.sh"
+      ],
+      "godot_version": {
+        "min": "4.6"
+      },
+      "selection_rationale": "自研 RPG 验证 pack，集中放置 battle replay、combat event stream、state dump、save roundtrip 和 UI smoke fixture，避免只凭文件存在宣称 RPG-ready。"
+    },
+    {
       "id": "flow-test-kit",
       "kind": "architecture-test-kit",
       "default": false,
@@ -426,6 +523,205 @@
         "min": "4.6"
       },
       "selection_rationale": "自研 flow smoke fixture，给 mode transition 与 result payload 提供可复用验证入口。"
+    },
+    {
+      "id": "rules-events-core",
+      "kind": "architecture-core",
+      "default": false,
+      "plugins": [],
+      "tooling": [],
+      "requires": [
+        "base"
+      ],
+      "conflicts": [],
+      "autoloads": [
+        {
+          "name": "RulesEventsCore",
+          "path": "res://addons/godot_toolbox_architecture/rules_events_core/rules_events_core.gd",
+          "singleton": true
+        }
+      ],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/rules_events_core/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [
+        "scripts/verify_rules_events_core_pack.sh"
+      ],
+      "godot_version": {
+        "min": "4.6"
+      },
+      "selection_rationale": "自研事件、条件、效果执行 spine，为 quest/dialogue/simulation hooks 提供稳定真相边界。"
+    },
+    {
+      "id": "ui-game-shell",
+      "kind": "optional-pack",
+      "default": false,
+      "plugins": [],
+      "tooling": [],
+      "requires": [
+        "base"
+      ],
+      "conflicts": [],
+      "autoloads": [],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/ui_game_shell/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [
+        "scripts/verify_ui_game_shell_pack.sh"
+      ],
+      "godot_version": {
+        "min": "4.6"
+      },
+      "selection_rationale": "提供菜单、暂停、modal 与 loading 壳层 primitives，但不接管项目主场景、save 或 flow 真相。"
+    },
+    {
+      "id": "inventory",
+      "kind": "optional-pack",
+      "default": false,
+      "plugins": [
+        "gloot"
+      ],
+      "tooling": [],
+      "requires": [
+        "base",
+        "data-core",
+        "save-core"
+      ],
+      "conflicts": [],
+      "autoloads": [],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/inventory/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [
+        "scripts/verify_specialized_pack_candidates.sh"
+      ],
+      "godot_version": {
+        "min": "4.6"
+      },
+      "selection_rationale": "Vendored GLoot as an opt-in inventory/equipment authoring pack. It may provide inventory runtime primitives, but RPG item truth and save adapters stay project-owned.",
+      "when_to_enable": [
+        "需要背包、物品槽、装备槽或 item prototyping 工具",
+        "愿意通过 adapter 把插件状态映射到 save-core/data-core"
+      ]
+    },
+    {
+      "id": "quest",
+      "kind": "optional-pack",
+      "default": false,
+      "plugins": [
+        "quest_system"
+      ],
+      "tooling": [],
+      "requires": [
+        "base",
+        "data-core",
+        "save-core",
+        "rules-events-core"
+      ],
+      "conflicts": [],
+      "autoloads": [],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/quest/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [
+        "scripts/verify_specialized_pack_candidates.sh"
+      ],
+      "godot_version": {
+        "min": "4.6"
+      },
+      "selection_rationale": "Vendored QuestSystem as an opt-in quest authoring/runtime pack. Quest state must be bridged through rules-events-core and save-core before becoming project truth.",
+      "when_to_enable": [
+        "需要资源化任务、目标、任务池或本地化任务文本",
+        "已有明确 quest/save/event adapter 边界"
+      ]
+    },
+    {
+      "id": "ai-behavior",
+      "kind": "optional-pack",
+      "default": false,
+      "plugins": [
+        "beehave"
+      ],
+      "tooling": [],
+      "requires": [
+        "base"
+      ],
+      "conflicts": [],
+      "autoloads": [],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/ai_behavior/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [
+        "scripts/verify_specialized_pack_candidates.sh"
+      ],
+      "godot_version": {
+        "min": "4.6"
+      },
+      "selection_rationale": "Vendored Beehave as an opt-in behavior-tree pack for projects whose NPC or enemy AI needs explicit behavior authoring. Basic turn-based RPG combat should still start with a smaller self-owned AI policy.",
+      "when_to_enable": [
+        "敌人、NPC 或模拟系统需要行为树 authoring",
+        "团队接受行为树节点资产和调试器维护成本"
+      ]
+    },
+    {
+      "id": "save-state-lite",
+      "kind": "optional-pack",
+      "default": false,
+      "plugins": [
+        "savestate"
+      ],
+      "tooling": [],
+      "requires": [
+        "base"
+      ],
+      "conflicts": [
+        "save-core"
+      ],
+      "autoloads": [
+        {
+          "name": "SaveManager",
+          "path": "res://addons/savestate/save_manager.gd",
+          "singleton": true
+        }
+      ],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/save_state_lite/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [
+        "scripts/verify_specialized_pack_candidates.sh"
+      ],
+      "godot_version": {
+        "min": "4.6"
+      },
+      "selection_rationale": "Vendored SaveState Lite as an opt-in advanced save tooling/reference pack. It conflicts with save-core because both expose a SaveSlot global class; save-core remains the default project-owned persistence contract.",
+      "when_to_enable": [
+        "需要 SaveManager、atomic writer、save browser 或 saveable component 参考实现",
+        "明确选择 SaveState Lite 作为独立存档工具，而不是同时启用 save-core"
+      ]
     }
   ],
   "open_source_references": [
@@ -440,8 +736,8 @@
       "id": "quest_system",
       "pack_direction": "quest",
       "url": "https://github.com/shomykohai/quest-system",
-      "status": "candidate-or-reference",
-      "absorption_mode": "evaluate against data-core/save-core first"
+      "status": "optional-pack",
+      "absorption_mode": "vendored as non-default quest pack; requires data-core/save-core/rules-events-core adapters before owning project quest state"
     },
     {
       "id": "dialogue_manager",
@@ -454,8 +750,8 @@
       "id": "gloot",
       "pack_direction": "inventory",
       "url": "https://github.com/peter-kish/gloot",
-      "status": "candidate-pack",
-      "absorption_mode": "optional pack, never base"
+      "status": "optional-pack",
+      "absorption_mode": "vendored as non-default inventory pack; RPG item/equipment truth stays in project-owned adapters"
     },
     {
       "id": "pandora",
@@ -468,8 +764,8 @@
       "id": "savestate_lite",
       "pack_direction": "save",
       "url": "https://github.com/youssof20/savestate",
-      "status": "reference-or-poc",
-      "absorption_mode": "atomic slot/migration ideas for save-core"
+      "status": "optional-pack",
+      "absorption_mode": "vendored as non-default save-state-lite pack; isolated from save-core due to SaveSlot global class conflict"
     },
     {
       "id": "mef",
@@ -489,8 +785,8 @@
       "id": "beehave",
       "pack_direction": "ai",
       "url": "https://github.com/bitbrain/beehave",
-      "status": "optional-reference",
-      "absorption_mode": "consider later as ai-behavior pack"
+      "status": "optional-pack",
+      "absorption_mode": "vendored as non-default ai-behavior pack; not required for basic turn-based RPG combat"
     },
     {
       "id": "limboai",

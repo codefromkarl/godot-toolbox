@@ -12,6 +12,7 @@ enum DuplicateIdPolicy {
 }
 
 const GameIdScript := preload("res://addons/godot_toolbox_architecture/data_core/game_id.gd")
+const ContentManifestScript := preload("res://addons/godot_toolbox_architecture/data_core/content_manifest.gd")
 
 var _resources: Dictionary = {}
 var duplicate_id_policy: DuplicateIdPolicy = DuplicateIdPolicy.REJECT
@@ -65,3 +66,30 @@ func clear() -> void:
 		return
 	_resources.clear()
 	registry_cleared.emit()
+
+
+func validate_manifest(manifest: Resource) -> Dictionary:
+	var errors: Array[String] = []
+	var seen: Dictionary = {}
+	if manifest == null or not manifest.has_method("ids"):
+		return {"ok": false, "errors": ["manifest is invalid"], "ids": []}
+	var ids: Array[StringName] = manifest.ids()
+	for id in ids:
+		if not GameIdScript.is_valid_id(id):
+			errors.append("invalid id: %s" % String(id))
+		if seen.has(id):
+			errors.append("duplicate id: %s" % String(id))
+		seen[id] = true
+	return {
+		"ok": errors.is_empty(),
+		"errors": errors,
+		"ids": ids,
+	}
+
+
+func load_manifest_from_dictionary(data: Dictionary) -> Resource:
+	return ContentManifestScript.from_dictionary(data)
+
+
+func load_manifest_json(path: String) -> Resource:
+	return ContentManifestScript.from_json_file(path)

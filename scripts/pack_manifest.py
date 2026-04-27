@@ -169,6 +169,13 @@ def validate_manifest(manifest: dict[str, Any]) -> OrderedDict[str, dict[str, An
                 elif not all(isinstance(item, str) and item.strip() for item in pack[field]):
                     errors.append(f"pack '{pack_id}' field '{field}' must be an array of non-empty strings")
 
+        for verification_entry in pack.get("verification", []):
+            verification_path = REPO_ROOT / verification_entry
+            if verification_entry.startswith("/") or ".." in Path(verification_entry).parts:
+                errors.append(f"pack '{pack_id}' verification entry must be repo-relative: {verification_entry}")
+            elif not verification_path.is_file():
+                errors.append(f"pack '{pack_id}' verification entry does not exist: {verification_entry}")
+
         if pack_id != "base" and "requires" in pack and "base" not in pack.get("requires", []):
             errors.append(f"pack '{pack_id}' must explicitly require 'base'")
 

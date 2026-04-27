@@ -40,6 +40,22 @@ required_paths=(
   "packs/data-core/godot/addons/godot_toolbox_architecture/data_core/data_core.gd"
   "packs/save-core/godot/addons/godot_toolbox_architecture/save_core/save_core.gd"
   "packs/flow-test-kit/godot/addons/godot_toolbox_architecture/flow_test_kit/flow_smoke_fixture.gd"
+  "packs/flow-test-kit/godot/addons/godot_toolbox_architecture/flow_test_kit/architecture_spine_smoke.gd"
+  "packs/rules-events-core/godot/addons/godot_toolbox_architecture/rules_events_core/rules_events_core.gd"
+  "packs/ui-game-shell/godot/addons/godot_toolbox_architecture/ui_game_shell/shell_root.gd"
+  "packs/inventory/README.md"
+  "packs/inventory/godot/addons/gloot/plugin.cfg"
+  "packs/quest/README.md"
+  "packs/quest/godot/addons/quest_system/plugin.cfg"
+  "packs/ai-behavior/README.md"
+  "packs/ai-behavior/godot/addons/beehave/plugin.cfg"
+  "packs/save-state-lite/README.md"
+  "packs/save-state-lite/godot/addons/savestate/plugin.cfg"
+  "docs/rpg-template-absorption-plan.md"
+  "scripts/verify_rules_events_core_pack.sh"
+  "scripts/verify_ui_game_shell_pack.sh"
+  "scripts/verify_pack_matrix.sh"
+  "scripts/verify_specialized_pack_candidates.sh"
 )
 
 missing=0

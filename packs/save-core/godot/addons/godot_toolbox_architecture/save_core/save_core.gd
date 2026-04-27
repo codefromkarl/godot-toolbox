@@ -3,9 +3,13 @@ class_name SaveCoreService
 
 const CURRENT_SCHEMA_VERSION := 1
 const SaveSnapshotScript := preload("res://addons/godot_toolbox_architecture/save_core/save_snapshot.gd")
+const SaveSlotScript := preload("res://addons/godot_toolbox_architecture/save_core/save_slot.gd")
 
 signal snapshot_saved(path: String)
 signal snapshot_loaded(path: String, snapshot: Resource)
+
+var keep_backup_on_overwrite: bool = true
+var _migrations: Dictionary = {}
 
 
 func create_snapshot(payload: Dictionary = {}) -> Resource:
@@ -13,6 +17,20 @@ func create_snapshot(payload: Dictionary = {}) -> Resource:
 	snapshot.schema_version = CURRENT_SCHEMA_VERSION
 	snapshot.payload = payload.duplicate(true)
 	return snapshot
+
+
+func create_slot(id: StringName, display_name: String, path: String) -> Resource:
+	var slot: Resource = SaveSlotScript.new()
+	slot.id = id
+	slot.display_name = display_name
+	slot.path = path
+	slot.schema_version = CURRENT_SCHEMA_VERSION
+	slot.updated_at_unix = int(Time.get_unix_time_from_system())
+	return slot
+
+
+func register_migration(from_version: int, migration: Callable) -> void:
+	_migrations[from_version] = migration
 
 
 func save_json(path: String, snapshot: Resource) -> Error:
@@ -45,7 +63,21 @@ func load_json(path: String) -> Resource:
 	if typeof(parsed) != TYPE_DICTIONARY:
 		return null
 	var snapshot: Resource = SaveSnapshotScript.from_dictionary(parsed)
+	snapshot = _apply_migrations(snapshot)
 	snapshot_loaded.emit(path, snapshot)
+	return snapshot
+
+
+func _apply_migrations(snapshot: Resource) -> Resource:
+	while snapshot != null and snapshot.schema_version < CURRENT_SCHEMA_VERSION:
+		var migration: Callable = _migrations.get(snapshot.schema_version, Callable())
+		if not migration.is_valid():
+			break
+		var migrated: Variant = migration.call(snapshot)
+		if migrated is Resource:
+			snapshot = migrated
+		else:
+			break
 	return snapshot
 
 
@@ -78,5 +110,6 @@ func _commit_tmp_file(tmp_path: String, path: String) -> Error:
 		DirAccess.rename_absolute(absolute_backup_path, absolute_path)
 		return err
 
-	DirAccess.remove_absolute(absolute_backup_path)
+	if not keep_backup_on_overwrite:
+		DirAccess.remove_absolute(absolute_backup_path)
 	return OK
