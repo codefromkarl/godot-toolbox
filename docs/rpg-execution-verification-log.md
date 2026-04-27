@@ -342,3 +342,62 @@ Remaining gaps:
 
 - `B5-rpg-test-observability` through `B7-final-acceptance-cleanup` remain incomplete.
 - `complete RPG template` remains disallowed until replay/event stream/state dump acceptance evidence and documentation governance are complete.
+
+## 2026-04-27 B5 RPG Test And Observability
+
+Batch: `B5-rpg-test-observability`
+
+Tasks:
+
+- `RPG-T01`: `rpg-test-kit` expanded beyond readiness scaffold.
+- `RPG-T02`: deterministic battle replay.
+- `RPG-T03`: combat event stream.
+- `RPG-T04`: battle/party/inventory/save state dump.
+- `RPG-T05`: acceptance matrix for `RPG-ready shell` and `complete RPG template`.
+
+Red check:
+
+- Added `scripts/verify_rpg_observability.sh`, replay smoke, and state dump smoke before implementation.
+- `bash scripts/verify_rpg_observability.sh`: exit `1`; failed because `docs/rpg-acceptance-matrix.md` did not exist.
+- First implementation run timed out after 240 seconds because `BattleSession` had a GDScript typed inference compile error on `hp_delta`, which prevented replay runner execution and `quit()`.
+
+Green check:
+
+- `bash scripts/verify_rpg_observability.sh`: exit `0`, `[verify-rpg-observability] PASS`; covered acceptance matrix checks, deterministic replay equality, expected action sequence, combat event stream serialization, and state dump JSON serialization.
+- `python3 scripts/pack_manifest.py validate`: exit `0`, `[pack-manifest] PASS`.
+- `bash -n scripts/*.sh templates/base/scripts/*.sh`: exit `0`.
+- `bash scripts/verify_rpg_test_kit_pack.sh`: exit `0`, `[verify-rpg-test-kit] PASS`.
+- `bash scripts/verify_rpg_battle_core_pack.sh`: exit `0`, `[verify-rpg-battle-core] PASS`.
+- `bash scripts/verify_rpg_ui_content.sh`: exit `0`, `[verify-rpg-ui-content] PASS`.
+- `bash scripts/verify_rpg_save_adapter_pack.sh`: exit `0`, `[verify-rpg-save-adapter] PASS`.
+- `bash scripts/verify_rpg_core_pack.sh`: exit `0`, `[verify-rpg-core] PASS`.
+- `python3 scripts/check_rpg_readiness.py`: exit `0`, readiness scaffold signal unchanged; still not the final completion authority.
+
+Status: `verified`
+
+Commit: `test: add RPG replay and observability evidence`
+
+Artifacts:
+
+- `docs/rpg-acceptance-matrix.md`
+- `scripts/verify_rpg_observability.sh`
+- `packs/rpg-battle-core/godot/addons/godot_toolbox_architecture/rpg_battle_core/events/combat_event_stream.gd`
+- `packs/rpg-battle-core/godot/addons/godot_toolbox_architecture/rpg_battle_core/battle/battle_session.gd`
+- `packs/rpg-test-kit/godot/addons/godot_toolbox_architecture/rpg_test_kit/replay/fixed_battle_replay.json`
+- `packs/rpg-test-kit/godot/addons/godot_toolbox_architecture/rpg_test_kit/replay/battle_replay_runner.gd`
+- `packs/rpg-test-kit/godot/addons/godot_toolbox_architecture/rpg_test_kit/dump/rpg_state_dump.gd`
+- `packs/rpg-test-kit/godot/addons/godot_toolbox_architecture/rpg_test_kit/tests/rpg_battle_replay_smoke.gd`
+- `packs/rpg-test-kit/godot/addons/godot_toolbox_architecture/rpg_test_kit/tests/rpg_state_dump_smoke.gd`
+- `packs/rpg-test-kit/README.md`
+- `packs.manifest.json`
+
+Cleanup receipt:
+
+- Timeout-created temp dir `/tmp/godot-toolbox-rpg-observability.w5XkYH` was removed.
+- No generated Godot projects remain under `/tmp/godot-toolbox-rpg-observability.*`.
+- Vibe was not used as implementation authority for this batch.
+
+Remaining gaps:
+
+- `B6-doc-governance` and `B7-final-acceptance-cleanup` remain incomplete.
+- `complete RPG template` claim remains disallowed until documentation governance and final cleanup receipt are complete.

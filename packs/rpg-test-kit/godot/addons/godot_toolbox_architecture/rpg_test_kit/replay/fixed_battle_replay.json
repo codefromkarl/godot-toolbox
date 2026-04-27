@@ -1,0 +1,38 @@
+{
+  "party": [
+    {
+      "id": "hero",
+      "team": "party",
+      "stats": {
+        "max_hp": 28,
+        "max_mp": 4,
+        "speed": 8,
+        "attack": 8,
+        "defense": 2
+      }
+    }
+  ],
+  "enemies": [
+    {
+      "id": "slime",
+      "team": "enemy",
+      "stats": {
+        "max_hp": 10,
+        "max_mp": 0,
+        "speed": 4,
+        "attack": 3,
+        "defense": 1
+      }
+    }
+  ],
+  "reward": {
+    "experience": 12,
+    "gold": 3
+  },
+  "max_turns": 10,
+  "expected_action_sequence": [
+    "hero:basic_attack",
+    "slime:basic_attack",
+    "hero:basic_attack"
+  ]
+}
