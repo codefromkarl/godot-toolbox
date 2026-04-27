@@ -526,7 +526,8 @@
       ],
       "input_map": [],
       "verification": [
-        "scripts/verify_rpg_test_kit_pack.sh"
+        "scripts/verify_rpg_test_kit_pack.sh",
+        "scripts/verify_rpg_ui_content.sh"
       ],
       "godot_version": {
         "min": "4.6"

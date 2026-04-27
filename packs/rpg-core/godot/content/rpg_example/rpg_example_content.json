@@ -1,0 +1,86 @@
+{
+  "heroes": [
+    {
+      "id": "hero/lyra",
+      "name": "Lyra",
+      "stats": {
+        "max_hp": 32,
+        "max_mp": 12,
+        "speed": 8,
+        "attack": 9,
+        "defense": 2
+      }
+    },
+    {
+      "id": "hero/bran",
+      "name": "Bran",
+      "stats": {
+        "max_hp": 42,
+        "max_mp": 4,
+        "speed": 5,
+        "attack": 11,
+        "defense": 4
+      }
+    }
+  ],
+  "enemies": [
+    {
+      "id": "enemy/slime",
+      "name": "Slime",
+      "reward_xp": 8,
+      "reward_gold": 3,
+      "stats": {
+        "max_hp": 10,
+        "max_mp": 0,
+        "speed": 3,
+        "attack": 3,
+        "defense": 1
+      }
+    },
+    {
+      "id": "enemy/bat",
+      "name": "Cave Bat",
+      "reward_xp": 10,
+      "reward_gold": 4,
+      "stats": {
+        "max_hp": 12,
+        "max_mp": 0,
+        "speed": 10,
+        "attack": 4,
+        "defense": 1
+      }
+    },
+    {
+      "id": "enemy/goblin",
+      "name": "Goblin Scout",
+      "reward_xp": 14,
+      "reward_gold": 7,
+      "stats": {
+        "max_hp": 18,
+        "max_mp": 0,
+        "speed": 6,
+        "attack": 6,
+        "defense": 2
+      }
+    }
+  ],
+  "skills": [
+    {"id": "skill/slash", "name": "Slash", "mp_cost": 1, "power": 3},
+    {"id": "skill/guard_break", "name": "Guard Break", "mp_cost": 2, "power": 5},
+    {"id": "skill/fire", "name": "Fire", "mp_cost": 3, "power": 7},
+    {"id": "skill/heal", "name": "Heal", "mp_cost": 2, "heal": 8},
+    {"id": "skill/rally", "name": "Rally", "mp_cost": 1, "power": 0}
+  ],
+  "items": [
+    {"id": "item/potion", "name": "Potion", "quantity": 2, "heal": 10},
+    {"id": "item/ether", "name": "Ether", "quantity": 1, "mp_restore": 5},
+    {"id": "item/antidote", "name": "Antidote", "quantity": 1},
+    {"id": "item/bomb", "name": "Bomb", "quantity": 1, "power": 8},
+    {"id": "item/slime_gel", "name": "Slime Gel", "quantity": 3}
+  ],
+  "equipment": [
+    {"id": "item/iron_sword", "name": "Iron Sword", "slot": "weapon", "attack": 3},
+    {"id": "item/oak_staff", "name": "Oak Staff", "slot": "weapon", "attack": 1},
+    {"id": "item/traveler_vest", "name": "Traveler Vest", "slot": "armor", "defense": 2}
+  ]
+}

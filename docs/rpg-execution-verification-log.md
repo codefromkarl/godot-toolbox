@@ -284,3 +284,61 @@ Remaining gaps:
 
 - `B4-rpg-ui-content` through `B7-final-acceptance-cleanup` remain incomplete.
 - `RPG-ready shell` remains disallowed until UI/content or final shell acceptance evidence is explicitly produced and claim language is updated.
+
+## 2026-04-27 B4 RPG UI And Example Content
+
+Batch: `B4-rpg-ui-content`
+
+Tasks:
+
+- `RPG-U01`: minimal battle scene.
+- `RPG-U02`: battle HUD scripts.
+- `RPG-U03`: skill menu.
+- `RPG-U04`: item menu.
+- `RPG-U05`: equipment / party management UI.
+- `RPG-U06`: example heroes, enemies, skills, items, and equipment.
+
+Red check:
+
+- Added `scripts/verify_rpg_ui_content.sh`, `rpg_battle_ui_smoke.gd`, `rpg_party_equipment_ui_smoke.gd`, and `rpg_example_content_smoke.gd` before implementation.
+- `bash scripts/verify_rpg_ui_content.sh`: exit `1`; failed because `res://scenes/rpg_battle/battle_root.tscn`, `battle_hud.gd`, `skill_menu.gd`, and `item_menu.gd` did not exist.
+
+Green check:
+
+- `bash scripts/verify_rpg_ui_content.sh`: exit `0`, `[verify-rpg-ui-content] PASS`; covered headless import, battle scene structure, HUD state text, skill disabled state, item consumption/HP change, party equipment stat output change, and example-content fixed battle.
+- `python3 scripts/pack_manifest.py validate`: exit `0`, `[pack-manifest] PASS`.
+- `bash -n scripts/*.sh templates/base/scripts/*.sh`: exit `0`.
+- `bash scripts/verify_rpg_core_pack.sh`: exit `0`, `[verify-rpg-core] PASS`.
+- `bash scripts/verify_rpg_battle_core_pack.sh`: exit `0`, `[verify-rpg-battle-core] PASS`.
+- `bash scripts/verify_rpg_save_adapter_pack.sh`: exit `0`, `[verify-rpg-save-adapter] PASS`.
+- `bash scripts/verify_rpg_test_kit_pack.sh`: exit `0`, `[verify-rpg-test-kit] PASS`.
+- `python3 -m json.tool packs/rpg-core/godot/content/rpg_example/rpg_example_content.json >/dev/null`: exit `0`.
+
+Status: `verified`
+
+Commit: `feat: add RPG UI scenes and example content`
+
+Artifacts:
+
+- `packs/rpg-battle-core/godot/scenes/rpg_battle/battle_root.tscn`
+- `packs/rpg-battle-core/godot/scenes/rpg_battle/battle_hud.gd`
+- `packs/rpg-battle-core/godot/scenes/rpg_battle/skill_menu.gd`
+- `packs/rpg-battle-core/godot/scenes/rpg_battle/item_menu.gd`
+- `packs/rpg-core/godot/scenes/rpg_party/party_equipment.tscn`
+- `packs/rpg-core/godot/scenes/rpg_party/party_equipment.gd`
+- `packs/rpg-core/godot/content/rpg_example/rpg_example_content.json`
+- `packs/rpg-battle-core/godot/addons/godot_toolbox_architecture/rpg_battle_core/tests/rpg_battle_ui_smoke.gd`
+- `packs/rpg-battle-core/godot/addons/godot_toolbox_architecture/rpg_battle_core/tests/rpg_example_content_smoke.gd`
+- `packs/rpg-core/godot/addons/godot_toolbox_architecture/rpg_core/tests/rpg_party_equipment_ui_smoke.gd`
+- `scripts/verify_rpg_ui_content.sh`
+- `packs.manifest.json`
+
+Cleanup receipt:
+
+- No generated Godot projects remain under `/tmp/godot-toolbox-rpg-ui.*`.
+- Vibe was not used as implementation authority for this batch.
+
+Remaining gaps:
+
+- `B5-rpg-test-observability` through `B7-final-acceptance-cleanup` remain incomplete.
+- `complete RPG template` remains disallowed until replay/event stream/state dump acceptance evidence and documentation governance are complete.
