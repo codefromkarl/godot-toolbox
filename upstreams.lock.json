@@ -147,15 +147,18 @@
     },
     {
       "id": "quest_system",
-      "kind": "reference",
+      "kind": "plugin",
       "source": {
         "type": "git",
-        "url": "https://github.com/shomykohai/quest-system"
+        "url": "https://github.com/shomykohai/quest-system.git",
+        "version": "2.0.1.4_4",
+        "ref": "2.0.1.4_4"
       },
       "integration": {
-        "mode": "candidate-reference",
-        "target": "packs/quest",
-        "note": "Evaluate against data-core/save-core before vendoring."
+        "mode": "vendor-subtree",
+        "target": "packs/quest/godot/addons/quest_system",
+        "note": "Optional quest pack source; explicit bootstrap only; quest persistence and events must integrate through save-core/rules-events-core adapters.",
+        "source_subdir": "addons/quest_system"
       },
       "patches": []
     },
@@ -175,15 +178,18 @@
     },
     {
       "id": "gloot",
-      "kind": "reference",
+      "kind": "plugin",
       "source": {
         "type": "git",
-        "url": "https://github.com/peter-kish/gloot"
+        "url": "https://github.com/peter-kish/gloot.git",
+        "version": "v3.0.1",
+        "ref": "v3.0.1"
       },
       "integration": {
-        "mode": "candidate-reference",
-        "target": "packs/inventory",
-        "note": "Optional inventory pack candidate; keep out of base."
+        "mode": "vendor-subtree",
+        "target": "packs/inventory/godot/addons/gloot",
+        "note": "Optional inventory/equipment pack source; explicit bootstrap only; RPG state truth stays in project adapters.",
+        "source_subdir": "addons/gloot"
       },
       "patches": []
     },
@@ -203,17 +209,25 @@
     },
     {
       "id": "savestate_lite",
-      "kind": "reference",
+      "kind": "plugin",
       "source": {
         "type": "git",
-        "url": "https://github.com/youssof20/savestate"
+        "url": "https://github.com/youssof20/savestate.git",
+        "version": "v1.2.0",
+        "ref": "v1.2.0"
       },
       "integration": {
-        "mode": "reference-only",
-        "target": "packs/save-core",
-        "note": "Atomic slot and migration ideas for save-core; no direct runtime truth."
+        "mode": "vendor-subtree",
+        "target": "packs/save-state-lite/godot/addons/savestate",
+        "note": "Optional advanced save-state reference pack; save-core remains the project-owned persistence boundary.",
+        "source_subdir": "addons/savestate"
       },
-      "patches": []
+      "patches": [
+        {
+          "path": "packs/save-state-lite/godot/addons/savestate/editor/save_browser_dock.gd",
+          "reason": "Guard ResourceUID lookup during headless bootstrap/import so missing UID registrations fall back to the vendored Lite SaveManager path without emitting engine errors."
+        }
+      ]
     },
     {
       "id": "mef",
@@ -245,15 +259,18 @@
     },
     {
       "id": "beehave",
-      "kind": "reference",
+      "kind": "plugin",
       "source": {
         "type": "git",
-        "url": "https://github.com/bitbrain/beehave"
+        "url": "https://github.com/bitbrain/beehave.git",
+        "version": "v2.9.2",
+        "ref": "v2.9.2"
       },
       "integration": {
-        "mode": "optional-reference",
-        "target": "packs/ai-behavior",
-        "note": "Potential future AI behavior pack, not starter baseline."
+        "mode": "vendor-subtree",
+        "target": "packs/ai-behavior/godot/addons/beehave",
+        "note": "Optional behavior-tree AI pack source; explicit bootstrap only; not required for basic turn-based RPG combat.",
+        "source_subdir": "addons/beehave"
       },
       "patches": []
     },

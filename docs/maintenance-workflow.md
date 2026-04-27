@@ -193,6 +193,7 @@
 bash -n scripts/*.sh templates/base/scripts/*.sh
 python3 -m json.tool packs.manifest.json >/dev/null
 python3 -m json.tool upstreams.lock.json >/dev/null
+python3 scripts/pack_manifest.py validate
 ```
 
 ### 2. 布局检查
@@ -205,6 +206,17 @@ python3 -m json.tool upstreams.lock.json >/dev/null
 
 ```bash
 bash ./scripts/verify_bootstrap_flow.sh
+```
+
+For architecture and pack-combination expansion, also run:
+
+```bash
+bash ./scripts/verify_game_architecture_packs.sh
+bash ./scripts/verify_rules_events_core_pack.sh
+bash ./scripts/verify_ui_game_shell_pack.sh
+bash ./scripts/verify_pack_matrix.sh --all
+python3 -m json.tool outputs/verification/pack-matrix/latest.json >/dev/null
+bash ./scripts/verify_specialized_pack_candidates.sh
 ```
 
 如果本轮改动的是可选 `input` pack，再补：
@@ -247,6 +259,17 @@ bash ./scripts/verify_automation_pack_poc.sh
 - 改动的行为和文档一致
 - 如果调整了选型或归类，相关 manifest 和文档已同步
 - 如果加入了新 pack 或新插件，README 至少有入口说明
+
+## G. 经验固化原则
+
+经验先分层，再决定落点：
+
+- 能自动判断的，优先变成 verifier、manifest 校验或 CI gate。
+- 依赖本仓库 pack 策略的，写入本仓库维护文档。
+- 跨项目都成立但还不是反复稳定问题的，只作为 checklist 或 skill 里的保守提示。
+- 只有无法从代码、文档或 Git 历史推导的偏好、风险和历史坑，才写入长期记忆。
+
+不要把单次事故直接固化成全局硬规则。只有多次出现、适用边界清楚、误伤成本可控时，才升级为具体强制规则。
 
 ## G. 推荐节奏
 

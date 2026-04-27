@@ -81,6 +81,18 @@
   - 原因：端到端运行时自动化价值高，适合 agent/CI 驱动黑盒回归；但会引入 Python 测试栈和额外运行成本，因此默认不启用
 - `G.U.I.D.E` → `input`
   - 原因：输入设备检测、映射上下文和提示图标能力复用面高；但会引入输入建模工作流，不应强绑到所有 starter
+- `rules-events-core`
+  - 原因：quest、dialogue、simulation hooks 需要共享事件/条件/效果边界；由 toolbox 持有真相，避免提前把规则语义藏进第三方插件
+- `ui-game-shell`
+  - 原因：菜单、暂停、modal、loading 复用面高，但不能接管主场景、存档或业务状态，因此作为 opt-in shell primitives
+- `GLoot` → `inventory`
+  - 原因：背包、物品槽和装备槽复用价值高；但 RPG item truth、装备规则、奖励结算和 save adapter 仍需项目持有，因此默认不启用
+- `QuestSystem` → `quest`
+  - 原因：资源化任务系统对 RPG/冒险项目价值高；但 campaign truth、任务事件和持久化必须接入 `rules-events-core` / `save-core` 边界，因此默认不启用
+- `Beehave` → `ai-behavior`
+  - 原因：行为树适合复杂 NPC/敌人/模拟 actor；但基础回合制战斗不应为 AI 引入行为树维护成本，因此默认不启用
+- `SaveState Lite` → `save-state-lite`
+  - 原因：SaveManager、atomic writer 和 save browser 有参考价值；但它与 `save-core` 存在 `SaveSlot` 全局类冲突，因此作为互斥的非默认参考/工具 pack，默认 RPG 模板仍使用 `save-core`
 
 ### Candidate Packs
 

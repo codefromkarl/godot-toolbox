@@ -15,6 +15,12 @@
 - `automation`：`GodotE2E`，显式选择时提供运行时 UI/E2E 自动化入口，默认不启用
 - `input`：`G.U.I.D.E`，显式选择时提供跨设备输入映射与提示能力，默认不启用
 - `flow-core` / `simulation-core` / `data-core` / `save-core` / `flow-test-kit`：自研复杂游戏架构 scaffold，提供 flow、tick、data registry、save snapshot 与 flow smoke fixture 的最小合约
+- `rules-events-core`：自研 event / condition / effect spine，给 quest、dialogue、simulation hooks 提供稳定事件边界
+- `ui-game-shell`：自研菜单、暂停、modal 与 loading shell primitives，不接管主场景、存档或业务运行时真相
+- `inventory`：`GLoot`，显式选择时提供背包、物品槽与装备相关 addon 能力，默认不启用
+- `quest`：`QuestSystem`，显式选择时提供资源化任务 addon 能力，默认不启用
+- `ai-behavior`：`Beehave`，显式选择时提供行为树 addon 能力，默认不启用
+- `save-state-lite`：`SaveState Lite`，显式选择时提供 SaveManager、atomic writer 与 save browser 参考能力，默认不启用
 
 另外保留一个**候选**方向：
 
@@ -49,6 +55,10 @@
 - `packs/`：可选插件 pack
 - `packs/automation/`：`GodotE2E` 可选 pack，显式选择后注入 `AutomationServer` autoload 并提供 pytest E2E smoke
 - `packs/input/`：`G.U.I.D.E` 可选 pack，显式选择后注入 `GUIDE` autoload 并提供输入映射上下文能力
+- `packs/inventory/`：`GLoot` 可选 pack，显式选择后提供 inventory/equipment addon
+- `packs/quest/`：`QuestSystem` 可选 pack，显式选择后提供 quest addon
+- `packs/ai-behavior/`：`Beehave` 可选 pack，显式选择后提供 behavior-tree addon
+- `packs/save-state-lite/`：`SaveState Lite` 可选 pack，显式选择后提供 advanced save tooling/reference addon
 - `packs/shell/`：候选 shell pack，当前仅锁定 `Maaack's Game Template` 上游与接入策略，不参与默认组装
 - `scripts/bootstrap_toolbox_project.sh`：按 pack 组装新项目
 - `scripts/verify_bootstrap_flow.sh`：验证真实产物链路，覆盖 bootstrap、headless import 和 `gdUnit4` smoke
@@ -63,6 +73,7 @@
 - `docs/selection-framework.md`：选型框架与当前归类理由
 - `docs/research/`：外部参考项目速记、插件探索智能体说明、热门插件扫描快照
 - `docs/open-source-architecture-links.md`：复杂游戏架构方向的开源候选链接与当前纳入边界
+- `docs/rpg-template-absorption-plan.md`：RPG 模板外部吸收、自研边界与落地计划
 - `upstreams.lock.json`：上游来源与版本锁定
 - `packs.manifest.json`：pack 定义、默认策略和适用场景
 
@@ -89,6 +100,28 @@
   --dry-run-report
 ```
 
+RPG 相关 opt-in pack 建议先用 dry-run report 确认依赖、autoload 和冲突关系：
+
+```bash
+./scripts/bootstrap_toolbox_project.sh /tmp/preview \
+  --packs=inventory,data-core,save-core \
+  --dry-run-report
+
+./scripts/bootstrap_toolbox_project.sh /tmp/preview \
+  --packs=quest,data-core,save-core,rules-events-core \
+  --dry-run-report
+
+./scripts/bootstrap_toolbox_project.sh /tmp/preview \
+  --packs=ai-behavior \
+  --dry-run-report
+
+./scripts/bootstrap_toolbox_project.sh /tmp/preview \
+  --packs=save-state-lite \
+  --dry-run-report
+```
+
+`save-state-lite` 是独立存档工具/reference pack，不能与 `save-core` 同时启用；默认 RPG 路径仍通过 `data-core,save-core` 保存项目自有状态。
+
 ## 持续稳定验证
 
 本地最小验证链：
@@ -96,6 +129,10 @@
 ```bash
 bash ./scripts/verify_toolbox_layout.sh
 bash ./scripts/verify_game_architecture_packs.sh
+bash ./scripts/verify_rules_events_core_pack.sh
+bash ./scripts/verify_ui_game_shell_pack.sh
+bash ./scripts/verify_pack_matrix.sh --all
+bash ./scripts/verify_specialized_pack_candidates.sh
 bash ./scripts/verify_input_pack_poc.sh
 bash ./scripts/verify_bootstrap_flow.sh
 ```
@@ -156,5 +193,24 @@ bash ./scripts/verify_automation_pack_poc.sh
 - `Sparkle Lite` 作为表现层 pack
 - `GodotE2E` 作为显式 opt-in automation pack，不进入默认 bootstrap
 - `G.U.I.D.E` 作为显式 opt-in input pack，不进入默认 bootstrap
+- `GLoot` 作为显式 opt-in inventory pack，不进入默认 bootstrap
+- `QuestSystem` 作为显式 opt-in quest pack，不进入默认 bootstrap
+- `Beehave` 作为显式 opt-in ai-behavior pack，不进入默认 bootstrap
+- `SaveState Lite` 作为显式 opt-in save-state-lite pack，不进入默认 bootstrap，且不替换 `save-core`
 - `gdterm` 不纳入工具箱
 - `UITextTokens Validator` 不原样纳入，后续应抽象成 repo-specific validator scaffold
+
+## RPG 模板方向
+
+RPG 相关第三方来源、vendor 版本、本地路径、吸收边界和后续任务清单见：
+
+- `docs/rpg-template-absorption-plan.md`
+
+当前已吸收为非默认 pack 的来源包括：
+
+- `GLoot`：<https://github.com/peter-kish/gloot>
+- `QuestSystem`：<https://github.com/shomykohai/quest-system>
+- `Beehave`：<https://github.com/bitbrain/beehave>
+- `SaveState Lite`：<https://github.com/youssof20/savestate>
+
+RPG 核心规则仍计划自研，包括 `rpg-core`、`rpg-battle-core`、`rpg-save-adapter` 和 `rpg-test-kit`。这些内容负责角色成长、战斗规则、奖励、队伍状态和存档格式，不应由第三方插件直接持有项目真相。

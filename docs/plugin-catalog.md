@@ -64,6 +64,62 @@
 - 适合：需要跨键鼠、手柄或触屏表达输入语义的项目
 - 边界：提供输入建模工具，不接管项目具体 action map、玩法输入真相或 UI 文案
 
+### `rules-events-core`
+
+- 插件：无，自研 architecture pack
+- 状态：可选 pack，默认不启用
+- 用途：事件、条件、效果执行 spine
+- 适合：quest、dialogue、simulation hooks 或 gameplay trigger 需要共享事件边界的项目
+- 边界：不替代 quest/dialogue/inventory 插件，不提供大型视觉脚本系统
+
+### `ui-game-shell`
+
+- 插件：无，自研 optional pack
+- 状态：可选 pack，默认不启用
+- 用途：菜单、暂停、modal、loading shell primitives
+- 适合：需要 app shell 起点但不能让第三方模板接管主场景和业务状态的项目
+- 边界：不接管 `run/main_scene`、FlowCore stack、save truth 或项目 UI 文案
+
+### `inventory`
+
+- 插件：`GLoot`
+- 版本：`v3.0.1`
+- 状态：可选 pack，默认不启用
+- 来源：<https://github.com/peter-kish/gloot>
+- 用途：背包、物品槽、装备槽与 inventory authoring/runtime primitives
+- 适合：RPG、模拟、战利品或装备系统需要成熟背包插件的项目
+- 边界：不接管 RPG item truth、装备规则、奖励结算或 `save-core` snapshot 映射
+
+### `quest`
+
+- 插件：`QuestSystem`
+- 版本：`2.0.1.4_4`
+- 状态：可选 pack，默认不启用
+- 来源：<https://github.com/shomykohai/quest-system>
+- 用途：资源化 quest、objective、quest pool 与任务运行时
+- 适合：需要任务 authoring/runtime，但仍希望通过 `rules-events-core` 和 `save-core` 持有项目真相的 RPG/冒险项目
+- 边界：不接管 campaign truth、剧情状态、任务持久化格式或 gameplay event 语义
+
+### `ai-behavior`
+
+- 插件：`Beehave`
+- 版本：`v2.9.2`
+- 状态：可选 pack，默认不启用
+- 来源：<https://github.com/bitbrain/beehave>
+- 用途：行为树 AI authoring、运行时和调试
+- 适合：NPC、敌人或模拟 actor 行为复杂到需要行为树的项目
+- 边界：不接管基础回合制战斗 AI、回合顺序、奖励结算或存档真相
+
+### `save-state-lite`
+
+- 插件：`SaveState Lite`
+- 版本：`v1.2.0`
+- 状态：可选 pack，默认不启用
+- 来源：<https://github.com/youssof20/savestate>
+- 用途：SaveManager、atomic writer、save browser、saveable component 参考实现
+- 适合：需要高级存档工具或组件式保存参考的项目
+- 边界：与 `save-core` 互斥，因为双方都定义 `SaveSlot` 全局类；默认 RPG 模板路径仍使用 `save-core`
+
 ## Candidate Packs
 
 ### `shell`

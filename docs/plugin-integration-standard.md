@@ -51,6 +51,17 @@
 4. 基线项目至少有一个 repo-owned smoke
 5. 若插件进入默认开发流，则必须补 CI/自动化入口
 
+### Pack Runtime Acceptance
+
+对正式 pack 的验收优先证明“可部署、可运行”，而不是只证明 manifest 完整：
+
+- 能通过 `scripts/bootstrap_toolbox_project.sh` 组装到临时项目。
+- 能完成 Godot headless import。
+- 对新增运行时能力，应提供 pack-local smoke 或加入已有 verifier。
+- 机器可读报告必须保持可解析；日志输出不要污染 JSON。
+
+这些规则用于正式 pack。候选 PoC 可以更轻量，但必须清楚标注未进入默认链路。
+
 ## Local Patch Policy
 
 - 默认不改 vendor 行为代码

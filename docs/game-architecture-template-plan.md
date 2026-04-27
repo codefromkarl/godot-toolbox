@@ -53,14 +53,14 @@ This prevents future projects from hiding core game truth inside a third-party p
 | Pack direction | Candidate source | Absorption mode | First decision |
 | --- | --- | --- | --- |
 | `input` | `G.U.I.D.E` | Non-default optional pack | Good fit for unified input across devices. Bootstrap injection contract now exists. |
-| `quest` | `QuestSystem` | Optional vendored candidate or reference | Good resource-based quest model. Evaluate interop with toolbox save/data contracts first. |
+| `quest` | `QuestSystem` | Non-default optional pack | Good resource-based quest model. Bootstrap contract now exists; project truth still needs save/event adapters. |
 | `dialogue` | `Dialogue Manager` | Candidate, wait for v4 maturity | Strong stateless dialogue model. Do not promote until Godot 4.6+ requirement and release status are acceptable. |
-| `inventory` | `GLoot` | Optional vendored candidate | Useful for RPG/sim projects. Keep out of base. |
-| `save` | `SaveState Lite`, GDQuest resource save pattern, Godot docs | Reference-first, likely own facade | Save correctness is core truth; use ideas, but own the contract. |
+| `inventory` | `GLoot` | Non-default optional pack | Useful for RPG/sim projects. Keep out of base and bridge through project-owned item/save adapters. |
+| `save` | `SaveState Lite`, GDQuest resource save pattern, Godot docs | Optional pack plus references | Save correctness is core truth; SaveState Lite is opt-in tooling/reference, while `save-core` owns the contract. |
 | `data` | `Pandora`, Godot Resource pattern | Reference only initially | Pandora is alpha and RPG-scoped. Build a smaller generic registry/resource scaffold first. |
 | `rules-events` | `MEF` | Reference only | Its execution group / condition / effect model is useful, but early 0.1.0 is too young to vendor. |
 | `flow` | `Maaack's Game Template`, `Scene Manager` | Reference only | Use ideas for transitions and menus, but own game mode/result/pause contracts. |
-| `ai` | `Beehave`, `LimboAI` | Optional / external reference | AI is project-specific. Beehave is easier to vendor; LimboAI is powerful but native-extension-heavy. |
+| `ai` | `Beehave`, `LimboAI` | Non-default optional pack / external reference | Beehave is now opt-in; LimboAI remains external by default due to native-extension surface. |
 
 ## Toolbox-Owned Packs To Build
 
@@ -277,7 +277,7 @@ Deliverables:
 - Promote `automation` if Phase 0 pack injection supports its autoload requirements.
 - Keep `shell` candidate isolated until it can install only shell scenes without owning game flow truth.
 - Keep `G.U.I.D.E` as a non-default `input` pack and avoid making input modeling part of `base`.
-- Evaluate `QuestSystem` as `quest` pack against `save-core` and `data-core`.
+- `QuestSystem` has been vendored as a non-default `quest` pack against `save-core`, `data-core`, and `rules-events-core`.
 
 Exit criteria:
 
@@ -288,19 +288,20 @@ Exit criteria:
 Deliverables:
 
 - Evaluate `dialogue` once Dialogue Manager 4 maturity is acceptable.
-- Evaluate `inventory` via GLoot.
+- `GLoot` has been vendored as a non-default `inventory` pack.
+- `SaveState Lite` has been vendored as a non-default `save-state-lite` pack.
 - Add `rules-events-core` before integrating quest/dialogue deeply.
 - Add `ui-game-shell` after flow/pause/modal boundaries are stable.
 
 Exit criteria:
 
-- Quest/dialogue/inventory packs can remain optional and can interoperate through toolbox-owned data/save/event contracts.
+- Quest/dialogue/inventory/save-tooling packs can remain optional and can interoperate through toolbox-owned data/save/event contracts.
 
 ### Phase 4: Advanced AI / Behavior Optionality
 
 Deliverables:
 
-- Decide whether `Beehave` should become an optional `ai-behavior` pack.
+- Keep `Beehave` as an optional `ai-behavior` pack; use self-owned deterministic policies for first-pass turn-based RPG combat.
 - Keep `LimboAI` as external reference unless a project explicitly needs GDExtension-based behavior trees/HSM.
 
 Exit criteria:
@@ -344,5 +345,8 @@ Current repository landing after this plan:
 - `scripts/pack_manifest.py` validates pack contracts, renders bootstrap project settings/autoloads, and produces dry-run injection reports.
 - `scripts/bootstrap_toolbox_project.sh --dry-run-report` previews selected pack overlays, enabled plugins, autoloads, project settings, and verification entries.
 - `flow-core`, `simulation-core`, `data-core`, `save-core`, and `flow-test-kit` now exist as toolbox-owned scaffold packs.
-- Open-source architecture candidates are linked in `docs/open-source-architecture-links.md`, `packs.manifest.json`, and `upstreams.lock.json`; none of the new third-party candidates are vendored by default.
+- `rules-events-core` now exists as a toolbox-owned event/condition/effect spine with a runnable smoke verifier.
+- `ui-game-shell` now exists as a toolbox-owned shell primitives pack with a runnable smoke verifier and no dependency on `Maaack's Game Template` runtime ownership.
+- `scripts/verify_pack_matrix.sh` now verifies deploy/import/smoke behavior across key pack combinations.
+- Open-source architecture candidates are linked in `docs/open-source-architecture-links.md`, `docs/rpg-template-absorption-plan.md`, `packs.manifest.json`, and `upstreams.lock.json`; vendored third-party gameplay packs remain non-default.
 - `scripts/verify_game_architecture_packs.sh` validates the new architecture pack bootstrap contract.
