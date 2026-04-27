@@ -78,6 +78,12 @@
 - `Sparkle Lite` → `juice`
   - 原因：表现层价值明显，但属于特定主题能力
 
+### Candidate Packs
+
+- `Maaack's Game Template` → `shell`
+  - 原因：菜单、设置、暂停、加载等 app shell 复用价值高，但它带有模板级运行时假设，不应默认进入所有项目或接管业务真相
+  - 当前状态：已作为候选 vendored upstream 锁定在 `packs/shell/`，暂不进入 `packs.manifest.json`
+
 ### Excluded / To Be Abstracted
 
 - `gdterm`

@@ -110,6 +110,163 @@
         "note": "候选 automation PoC 的 vendored addon 来源；仅用于独立 PoC 闭环，不进入 packs.manifest.json、默认 bootstrap、默认 CI 或默认验证链"
       },
       "patches": []
+    },
+    {
+      "id": "maaacks_game_template",
+      "kind": "plugin",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/Maaack/Godot-Game-Template.git",
+        "version": "v1.4.6-plugin",
+        "ref": "v1.4.6-plugin"
+      },
+      "integration": {
+        "mode": "vendor-subtree",
+        "target": "packs/shell/godot/addons/maaacks_game_template",
+        "source_subdir": "addons/maaacks_game_template",
+        "note": "Candidate shell/menu/settings/pause/loading template source; remains outside default bootstrap until promoted."
+      },
+      "patches": []
+    },
+    {
+      "id": "guide",
+      "kind": "reference",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/godotneers/G.U.I.D.E"
+      },
+      "integration": {
+        "mode": "candidate-reference",
+        "target": "packs/input",
+        "note": "Candidate input pack link only; do not vendor until bootstrap injection contract and version lock are decided."
+      },
+      "patches": []
+    },
+    {
+      "id": "quest_system",
+      "kind": "reference",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/shomykohai/quest-system"
+      },
+      "integration": {
+        "mode": "candidate-reference",
+        "target": "packs/quest",
+        "note": "Evaluate against data-core/save-core before vendoring."
+      },
+      "patches": []
+    },
+    {
+      "id": "dialogue_manager",
+      "kind": "reference",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/nathanhoad/godot_dialogue_manager"
+      },
+      "integration": {
+        "mode": "candidate-reference",
+        "target": "packs/dialogue",
+        "note": "Deferred until Godot 4.6+ v4 maturity is acceptable."
+      },
+      "patches": []
+    },
+    {
+      "id": "gloot",
+      "kind": "reference",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/peter-kish/gloot"
+      },
+      "integration": {
+        "mode": "candidate-reference",
+        "target": "packs/inventory",
+        "note": "Optional inventory pack candidate; keep out of base."
+      },
+      "patches": []
+    },
+    {
+      "id": "pandora",
+      "kind": "reference",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/bitbrain/pandora"
+      },
+      "integration": {
+        "mode": "reference-only",
+        "target": "packs/data-core",
+        "note": "Data taxonomy reference only; data-core remains toolbox-owned."
+      },
+      "patches": []
+    },
+    {
+      "id": "savestate_lite",
+      "kind": "reference",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/youssof20/savestate"
+      },
+      "integration": {
+        "mode": "reference-only",
+        "target": "packs/save-core",
+        "note": "Atomic slot and migration ideas for save-core; no direct runtime truth."
+      },
+      "patches": []
+    },
+    {
+      "id": "mef",
+      "kind": "reference",
+      "source": {
+        "type": "asset-library",
+        "url": "https://godotengine.org/asset-library/asset/4798"
+      },
+      "integration": {
+        "mode": "reference-only",
+        "target": "packs/rules-events-core",
+        "note": "Execution group / condition / effect model reference."
+      },
+      "patches": []
+    },
+    {
+      "id": "scene_manager",
+      "kind": "reference",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/glass-brick/Scene-Manager"
+      },
+      "integration": {
+        "mode": "reference-only",
+        "target": "packs/flow-core",
+        "note": "Transition reference only; flow-core owns game mode/result semantics."
+      },
+      "patches": []
+    },
+    {
+      "id": "beehave",
+      "kind": "reference",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/bitbrain/beehave"
+      },
+      "integration": {
+        "mode": "optional-reference",
+        "target": "packs/ai-behavior",
+        "note": "Potential future AI behavior pack, not starter baseline."
+      },
+      "patches": []
+    },
+    {
+      "id": "limboai",
+      "kind": "reference",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/limbonaut/limboai"
+      },
+      "integration": {
+        "mode": "external-reference",
+        "target": "packs/ai-behavior",
+        "note": "Keep external by default due to native extension and asset licensing surface."
+      },
+      "patches": []
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "toolbox_identity": {
     "name": "godot-toolbox",
     "kind": "ai-native-godot-bootstrap-control-plane"
@@ -11,6 +11,24 @@
     "maintenance_cost",
     "truth_boundary_risk"
   ],
+  "pack_contract": {
+    "required_fields": [
+      "requires",
+      "conflicts",
+      "autoloads",
+      "project_settings",
+      "input_map",
+      "verification",
+      "godot_version"
+    ],
+    "owned_truth": [
+      "flow contracts",
+      "state boundaries",
+      "save contracts",
+      "data ID contracts",
+      "verification contracts"
+    ]
+  },
   "base_template": {
     "path": "templates/base",
     "default_enabled_plugins": [
@@ -36,6 +54,22 @@
       "tooling": [
         "godot-gdscript-toolkit"
       ],
+      "requires": [],
+      "conflicts": [],
+      "autoloads": [],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/base/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [
+        "templates/base/scripts/gdunit4_smoke.sh"
+      ],
+      "godot_version": {
+        "min": "4.6"
+      },
       "selection_rationale": "高自动化价值、低领域耦合、适合作为 Day 0 基线"
     },
     {
@@ -45,6 +79,23 @@
       "plugins": [
         "godot_doctor"
       ],
+      "tooling": [],
+      "requires": [
+        "base"
+      ],
+      "conflicts": [],
+      "autoloads": [],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/validation/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [],
+      "godot_version": {
+        "min": "4.6"
+      },
       "selection_rationale": "把资源与场景约束变成可执行校验，适合需要 contract 的项目",
       "when_to_enable": [
         "需要把场景或资源规则纳入 CI",
@@ -58,6 +109,23 @@
       "plugins": [
         "signal_lens"
       ],
+      "tooling": [],
+      "requires": [
+        "base"
+      ],
+      "conflicts": [],
+      "autoloads": [],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/debug/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [],
+      "godot_version": {
+        "min": "4.6"
+      },
       "selection_rationale": "调试价值高，但主要作用于开发阶段，不应默认进入所有项目",
       "when_to_enable": [
         "项目 heavily uses signals",
@@ -71,6 +139,23 @@
       "plugins": [
         "godot_state_charts"
       ],
+      "tooling": [],
+      "requires": [
+        "base"
+      ],
+      "conflicts": [],
+      "autoloads": [],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/stateful/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [],
+      "godot_version": {
+        "min": "4.6"
+      },
       "selection_rationale": "适合显式状态图架构项目，但不应强绑到所有 starter",
       "when_to_enable": [
         "行为逻辑复杂且需要清晰状态转换",
@@ -84,11 +169,257 @@
       "plugins": [
         "sparkle_lite"
       ],
+      "tooling": [],
+      "requires": [
+        "base"
+      ],
+      "conflicts": [],
+      "autoloads": [],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/juice/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [],
+      "godot_version": {
+        "min": "4.6"
+      },
       "selection_rationale": "表现层价值明显，但属于特定主题能力",
       "when_to_enable": [
         "需要快速建立 game-feel 工作流",
         "项目重视反馈 authoring 与表现迭代"
       ]
+    },
+    {
+      "id": "flow-core",
+      "kind": "architecture-core",
+      "default": false,
+      "plugins": [],
+      "tooling": [],
+      "requires": [
+        "base"
+      ],
+      "conflicts": [],
+      "autoloads": [
+        {
+          "name": "FlowCore",
+          "path": "res://addons/godot_toolbox_architecture/flow_core/flow_core.gd",
+          "singleton": true
+        }
+      ],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/flow_core/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [
+        "scripts/verify_game_architecture_packs.sh"
+      ],
+      "godot_version": {
+        "min": "4.6"
+      },
+      "selection_rationale": "自研复杂游戏 flow spine，提供 GameMode、FlowRequest、FlowResult 与 pause/result 边界。"
+    },
+    {
+      "id": "simulation-core",
+      "kind": "architecture-core",
+      "default": false,
+      "plugins": [],
+      "tooling": [],
+      "requires": [
+        "base",
+        "flow-core"
+      ],
+      "conflicts": [],
+      "autoloads": [
+        {
+          "name": "SimulationCore",
+          "path": "res://addons/godot_toolbox_architecture/simulation_core/simulation_core.gd",
+          "singleton": true
+        }
+      ],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/simulation_core/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [
+        "scripts/verify_game_architecture_packs.sh"
+      ],
+      "godot_version": {
+        "min": "4.6"
+      },
+      "selection_rationale": "自研稳定 tick/time-scale 边界，避免把长生命周期模拟塞进任意 Node 生命周期。"
+    },
+    {
+      "id": "data-core",
+      "kind": "architecture-core",
+      "default": false,
+      "plugins": [],
+      "tooling": [],
+      "requires": [
+        "base"
+      ],
+      "conflicts": [],
+      "autoloads": [
+        {
+          "name": "DataCore",
+          "path": "res://addons/godot_toolbox_architecture/data_core/data_core.gd",
+          "singleton": true
+        }
+      ],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/data_core/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [
+        "scripts/verify_game_architecture_packs.sh"
+      ],
+      "godot_version": {
+        "min": "4.6"
+      },
+      "selection_rationale": "自研轻量 data registry 与稳定 ID 合约，吸收 Resource/Pandora 思路但不变成 RPG 数据库。"
+    },
+    {
+      "id": "save-core",
+      "kind": "architecture-core",
+      "default": false,
+      "plugins": [],
+      "tooling": [],
+      "requires": [
+        "base",
+        "data-core"
+      ],
+      "conflicts": [],
+      "autoloads": [
+        {
+          "name": "SaveCore",
+          "path": "res://addons/godot_toolbox_architecture/save_core/save_core.gd",
+          "singleton": true
+        }
+      ],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/save_core/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [
+        "scripts/verify_game_architecture_packs.sh"
+      ],
+      "godot_version": {
+        "min": "4.6"
+      },
+      "selection_rationale": "自研 versioned snapshot/save-slot 边界，参考 SaveState/GDQuest/Godot 文档但不保存任意 scene tree。"
+    },
+    {
+      "id": "flow-test-kit",
+      "kind": "architecture-test-kit",
+      "default": false,
+      "plugins": [],
+      "tooling": [],
+      "requires": [
+        "base",
+        "flow-core"
+      ],
+      "conflicts": [],
+      "autoloads": [],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/flow_test_kit/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [
+        "scripts/verify_game_architecture_packs.sh"
+      ],
+      "godot_version": {
+        "min": "4.6"
+      },
+      "selection_rationale": "自研 flow smoke fixture，给 mode transition 与 result payload 提供可复用验证入口。"
+    }
+  ],
+  "open_source_references": [
+    {
+      "id": "guide",
+      "pack_direction": "input",
+      "url": "https://github.com/godotneers/G.U.I.D.E",
+      "status": "candidate-pack",
+      "absorption_mode": "optional vendored candidate after bootstrap injection contract"
+    },
+    {
+      "id": "quest_system",
+      "pack_direction": "quest",
+      "url": "https://github.com/shomykohai/quest-system",
+      "status": "candidate-or-reference",
+      "absorption_mode": "evaluate against data-core/save-core first"
+    },
+    {
+      "id": "dialogue_manager",
+      "pack_direction": "dialogue",
+      "url": "https://github.com/nathanhoad/godot_dialogue_manager",
+      "status": "deferred-candidate",
+      "absorption_mode": "wait for Godot 4.6+ v4 maturity"
+    },
+    {
+      "id": "gloot",
+      "pack_direction": "inventory",
+      "url": "https://github.com/peter-kish/gloot",
+      "status": "candidate-pack",
+      "absorption_mode": "optional pack, never base"
+    },
+    {
+      "id": "pandora",
+      "pack_direction": "data",
+      "url": "https://github.com/bitbrain/pandora",
+      "status": "reference-only",
+      "absorption_mode": "taxonomy inspiration for data-core"
+    },
+    {
+      "id": "savestate_lite",
+      "pack_direction": "save",
+      "url": "https://github.com/youssof20/savestate",
+      "status": "reference-or-poc",
+      "absorption_mode": "atomic slot/migration ideas for save-core"
+    },
+    {
+      "id": "mef",
+      "pack_direction": "rules-events",
+      "url": "https://godotengine.org/asset-library/asset/4798",
+      "status": "reference-only",
+      "absorption_mode": "execution group/condition/effect ideas"
+    },
+    {
+      "id": "scene_manager",
+      "pack_direction": "flow",
+      "url": "https://github.com/glass-brick/Scene-Manager",
+      "status": "reference-only",
+      "absorption_mode": "transition ideas only; flow-core owns result semantics"
+    },
+    {
+      "id": "beehave",
+      "pack_direction": "ai",
+      "url": "https://github.com/bitbrain/beehave",
+      "status": "optional-reference",
+      "absorption_mode": "consider later as ai-behavior pack"
+    },
+    {
+      "id": "limboai",
+      "pack_direction": "ai",
+      "url": "https://github.com/limbonaut/limboai",
+      "status": "external-reference",
+      "absorption_mode": "avoid default due to native extension surface"
     }
   ],
   "excluded": [

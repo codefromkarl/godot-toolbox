@@ -8,13 +8,14 @@ MANIFEST_PATH="${REPO_ROOT}/packs.manifest.json"
 usage() {
   cat <<'EOF'
 Usage:
-  ./scripts/bootstrap_toolbox_project.sh <destination> [--packs=pack_a,pack_b] [--force]
+  ./scripts/bootstrap_toolbox_project.sh <destination> [--packs=pack_a,pack_b] [--force] [--dry-run-report]
 EOF
 }
 
 DEST=""
 PACKS_CSV=""
 FORCE="0"
+DRY_RUN_REPORT="0"
 
 for arg in "$@"; do
   case "$arg" in
@@ -23,6 +24,9 @@ for arg in "$@"; do
       ;;
     --force)
       FORCE="1"
+      ;;
+    --dry-run-report)
+      DRY_RUN_REPORT="1"
       ;;
     -h|--help)
       usage
@@ -44,6 +48,14 @@ if [[ -z "${DEST}" ]]; then
   echo "[bootstrap] ERROR: destination is required." >&2
   usage
   exit 1
+fi
+
+python3 "${REPO_ROOT}/scripts/pack_manifest.py" validate >/dev/null
+python3 "${REPO_ROOT}/scripts/pack_manifest.py" report --packs="${PACKS_CSV}" >/dev/null
+
+if [[ "${DRY_RUN_REPORT}" == "1" ]]; then
+  python3 "${REPO_ROOT}/scripts/pack_manifest.py" report --packs="${PACKS_CSV}"
+  exit 0
 fi
 
 mkdir -p "${DEST}"
@@ -142,22 +154,22 @@ if [[ -n "${PACKS_CSV}" ]]; then
   done
 fi
 
-plugin_list=""
-for plugin in "${enabled_plugins[@]}"; do
-  if [[ -n "${plugin_list}" ]]; then
-    plugin_list+=", "
-  fi
-  plugin_list+="\"${plugin}\""
-done
+normalized_packs_csv=""
+if [[ "${#normalized_packs[@]}" -gt 0 ]]; then
+  normalized_packs_csv="$(IFS=','; printf '%s' "${normalized_packs[*]}")"
+fi
 
-sed "s|__EDITOR_PLUGIN_LIST__|${plugin_list}|g" \
-  "${DEST}/godot/project.godot.in" > "${DEST}/godot/project.godot"
+python3 "${REPO_ROOT}/scripts/pack_manifest.py" render-project \
+  --packs="${normalized_packs_csv}" \
+  --template="${DEST}/godot/project.godot.in" \
+  > "${DEST}/godot/project.godot"
 rm -f "${DEST}/godot/project.godot.in"
 
 if [[ "${#normalized_packs[@]}" -gt 0 ]]; then
-  normalized_packs_csv="$(IFS=','; printf '%s' "${normalized_packs[*]}")"
   printf '%s\n' "${normalized_packs_csv}" > "${DEST}/.toolbox-packs"
 fi
+
+plugin_list="$(python3 "${REPO_ROOT}/scripts/pack_manifest.py" plugins --packs="${normalized_packs_csv}")"
 
 echo "[bootstrap] Project created at ${DEST}"
 echo "[bootstrap] Enabled plugins: ${plugin_list}"

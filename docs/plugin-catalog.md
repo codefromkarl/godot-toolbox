@@ -46,6 +46,17 @@
 - 用途：打击感、反馈编排、表现层 authoring
 - 适合：需要快速建立 game-feel 工作流的项目
 
+## Candidate Packs
+
+### `shell`
+
+- 插件：`Maaack's Game Template`
+- 版本：`1.4.6`
+- 状态：候选 pack，已锁定 upstream，但不在 `packs.manifest.json`
+- 用途：主菜单、设置菜单、暂停菜单、Credits、加载页、开场页、输入映射和持久设置参考
+- 适合：已有项目选择性吸收 app shell 能力，或新项目评估菜单/设置壳层起步方案
+- 边界：不接管业务运行时、主场景、autoload、存档真相或玩法状态
+
 ## Excluded
 
 ### `gdterm`

@@ -12,11 +12,14 @@
 - `debug`：`Signal Lens`
 - `stateful`：`Godot State Charts`
 - `juice`：`Sparkle Lite`
+- `flow-core` / `simulation-core` / `data-core` / `save-core` / `flow-test-kit`：自研复杂游戏架构 scaffold，提供 flow、tick、data registry、save snapshot 与 flow smoke fixture 的最小合约
 
-另外保留一个**候选**方向：
+另外保留两个**候选**方向：
 
 - `packs/automation/`：`GodotE2E` 候选 PoC 骨架，当前**不在** `packs.manifest.json`，也**不参与**默认 bootstrap
   但其 vendored upstream 已记录在 `upstreams.lock.json`，可单独走升级闭环
+- `packs/shell/`：`Maaack's Game Template` 候选 shell pack，当前**不在** `packs.manifest.json`，也**不接管**默认主场景、autoload 或运行时状态
+  但其 vendored upstream 已记录在 `upstreams.lock.json`，用于评估菜单、设置、暂停、加载等通用壳层能力
 
 ## 设计原则
 
@@ -44,8 +47,10 @@
 
 - `templates/base/`：基础项目模板
 - `packs/`：可选插件 pack
+- `packs/shell/`：候选 shell pack，当前仅锁定 `Maaack's Game Template` 上游与接入策略，不参与默认组装
 - `scripts/bootstrap_toolbox_project.sh`：按 pack 组装新项目
 - `scripts/verify_bootstrap_flow.sh`：验证真实产物链路，覆盖 bootstrap、headless import 和 `gdUnit4` smoke
+- `scripts/verify_game_architecture_packs.sh`：验证自研架构 packs 的 manifest contract、dry-run report、autoload 注入与 bootstrap 产物
 - `scripts/verify_automation_pack_poc.sh`：验证 `packs/automation/` 候选 PoC 骨架，不接入默认验证链
 - `scripts/import_plugin_from_upstream.sh`：首次从 upstream 导入插件子树
 - `scripts/update_plugin_from_upstream.sh`：基于 lock 文件升级已纳入插件或候选 PoC 的 vendored 子树
@@ -55,6 +60,7 @@
 - `docs/maintenance-workflow.md`：维护、导入、升级、组装与验证手册
 - `docs/selection-framework.md`：选型框架与当前归类理由
 - `docs/research/`：外部参考项目速记、插件探索智能体说明、热门插件扫描快照
+- `docs/open-source-architecture-links.md`：复杂游戏架构方向的开源候选链接与当前纳入边界
 - `upstreams.lock.json`：上游来源与版本锁定
 - `packs.manifest.json`：pack 定义、默认策略和适用场景
 
@@ -73,12 +79,21 @@
 `bootstrap_toolbox_project.sh` 不再在脚本里硬编码 `pack -> plugin.cfg` 映射。
 如果请求的 pack 不存在于 `packs.manifest.json`，脚本会直接报错。
 
+预览某组 pack 会注入哪些 autoload、project settings 和验证入口：
+
+```bash
+./scripts/bootstrap_toolbox_project.sh /tmp/preview \
+  --packs=flow-core,simulation-core,data-core,save-core,flow-test-kit \
+  --dry-run-report
+```
+
 ## 持续稳定验证
 
 本地最小验证链：
 
 ```bash
 bash ./scripts/verify_toolbox_layout.sh
+bash ./scripts/verify_game_architecture_packs.sh
 bash ./scripts/verify_bootstrap_flow.sh
 ```
 
@@ -121,6 +136,12 @@ bash ./scripts/verify_automation_pack_poc.sh
 
 ```bash
 ./scripts/update_plugin_from_upstream.sh --id=godot_e2e --dry-run
+```
+
+候选 `shell` pack 的上游也已锁定，可以独立预演升级：
+
+```bash
+./scripts/update_plugin_from_upstream.sh --id=maaacks_game_template --dry-run
 ```
 
 ## 当前默认策略

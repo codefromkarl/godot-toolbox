@@ -18,6 +18,10 @@
 2. `G.U.I.D.E`
 3. `Dialogue Manager`
 
+另有一个已在后续接入为候选 shell pack 的模板来源：
+
+- `Maaack's Game Template`：用于菜单、设置、暂停、加载等 app shell 能力评估；不进入 `base`
+
 其余候选更适合作为外部参考或明确不纳入。
 
 ## 分级短名单
@@ -153,6 +157,7 @@
 - 可以考虑新增两个候选 pack 方向：
   - `automation/e2e`
   - `ui-input`
+- `shell` 方向已通过 `Maaack's Game Template` 锁定为候选 vendored upstream，但仍不进入默认 bootstrap
 - `dialogue` 方向可以保留为第二梯队
 - `AI / MCP` 类插件暂不做 vendoring，只作为外部开发环境参考
 
