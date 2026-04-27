@@ -230,3 +230,57 @@ Remaining gaps:
 
 - `B3-rpg-save-adapter-tdd` through `B7-final-acceptance-cleanup` remain incomplete.
 - `RPG-ready shell` remains disallowed until save/reload preservation and later observability evidence exist.
+
+## 2026-04-27 B3 RPG Save Adapter TDD
+
+Batch: `B3-rpg-save-adapter-tdd`
+
+Tasks:
+
+- `RPG-S01`: RPG state serializer/deserializer to `save-core` snapshot payload.
+- `RPG-S02`: RPG save schema version and migration stub.
+- `RPG-S03`: inventory/equipment save adapter independent of GLoot runtime unless selected.
+- `RPG-S04`: quest state save adapter with `quest` pack selected.
+
+Red check:
+
+- Added `rpg-save-adapter` manifest row, `scripts/verify_rpg_save_adapter_pack.sh`, roundtrip smoke, and quest smoke before implementation.
+- `bash scripts/verify_rpg_save_adapter_pack.sh`: exit `1`; failed because `rpg_save_adapter.gd` and `schema/rpg_save_schema.gd` did not exist and the autoload could not be created.
+- First implementation run exited `0` but printed resource leak `ERROR` lines from the roundtrip smoke; rejected as invalid green evidence and fixed by freeing manually created `RPGSaveAdapter` and `SaveCore` nodes.
+
+Green check:
+
+- `bash scripts/verify_rpg_save_adapter_pack.sh`: exit `0`, `[verify-rpg-save-adapter] PASS`; covered save-core snapshot payload roundtrip, schema migration/rejection, inventory/equipment refs, and quest-state adapter with `quest` selected.
+- `python3 scripts/pack_manifest.py validate`: exit `0`, `[pack-manifest] PASS`.
+- `bash -n scripts/*.sh templates/base/scripts/*.sh`: exit `0`.
+- `bash scripts/verify_rpg_test_kit_pack.sh`: exit `0`, `[verify-rpg-test-kit] PASS` with `rpg-save-adapter` included.
+- `bash scripts/verify_rpg_core_pack.sh`: exit `0`, `[verify-rpg-core] PASS`.
+- `bash scripts/verify_rpg_battle_core_pack.sh`: exit `0`, `[verify-rpg-battle-core] PASS`.
+- `python3 scripts/check_rpg_readiness.py`: exit `0`, readiness scaffold signal unchanged; still not full completion evidence.
+
+Status: `verified`
+
+Commit: `feat: add RPG save adapter`
+
+Artifacts:
+
+- `packs.manifest.json`
+- `packs/rpg-save-adapter/README.md`
+- `packs/rpg-save-adapter/godot/addons/godot_toolbox_architecture/rpg_save_adapter/rpg_save_adapter.gd`
+- `packs/rpg-save-adapter/godot/addons/godot_toolbox_architecture/rpg_save_adapter/schema/rpg_save_schema.gd`
+- `packs/rpg-save-adapter/godot/addons/godot_toolbox_architecture/rpg_save_adapter/adapters/inventory_equipment_save_adapter.gd`
+- `packs/rpg-save-adapter/godot/addons/godot_toolbox_architecture/rpg_save_adapter/adapters/quest_save_adapter.gd`
+- `packs/rpg-save-adapter/godot/addons/godot_toolbox_architecture/rpg_save_adapter/tests/rpg_save_adapter_smoke.gd`
+- `packs/rpg-save-adapter/godot/addons/godot_toolbox_architecture/rpg_save_adapter/tests/rpg_quest_save_adapter_smoke.gd`
+- `scripts/verify_rpg_save_adapter_pack.sh`
+- `scripts/verify_rpg_test_kit_pack.sh`
+
+Cleanup receipt:
+
+- No generated Godot projects or temporary quest logs remain under `/tmp/godot-toolbox-rpg-save-*` or `/tmp/godot-toolbox-quest.*.log`.
+- Vibe was not used as implementation authority for this batch.
+
+Remaining gaps:
+
+- `B4-rpg-ui-content` through `B7-final-acceptance-cleanup` remain incomplete.
+- `RPG-ready shell` remains disallowed until UI/content or final shell acceptance evidence is explicitly produced and claim language is updated.

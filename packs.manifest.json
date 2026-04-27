@@ -470,6 +470,41 @@
       "selection_rationale": "自研 deterministic turn-based battle contract pack，依赖 rpg-core 的角色状态、flow-core 的模式边界和 rules-events-core 的事件边界，不依赖 Beehave 才能运行最小战斗。"
     },
     {
+      "id": "rpg-save-adapter",
+      "kind": "architecture-core",
+      "default": false,
+      "plugins": [],
+      "tooling": [],
+      "requires": [
+        "base",
+        "rpg-core",
+        "save-core",
+        "rules-events-core"
+      ],
+      "conflicts": [],
+      "autoloads": [
+        {
+          "name": "RPGSaveAdapter",
+          "path": "res://addons/godot_toolbox_architecture/rpg_save_adapter/rpg_save_adapter.gd",
+          "singleton": true
+        }
+      ],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/rpg_save_adapter/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [
+        "scripts/verify_rpg_save_adapter_pack.sh"
+      ],
+      "godot_version": {
+        "min": "4.6"
+      },
+      "selection_rationale": "自研 RPG state 到 save-core snapshot 的 adapter pack，持有 RPG save schema、migration stub、inventory/equipment refs 和 quest state 映射。"
+    },
+    {
       "id": "rpg-test-kit",
       "kind": "architecture-test-kit",
       "default": false,
@@ -478,7 +513,8 @@
       "requires": [
         "base",
         "rpg-core",
-        "rpg-battle-core"
+        "rpg-battle-core",
+        "rpg-save-adapter"
       ],
       "conflicts": [],
       "autoloads": [],
