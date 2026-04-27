@@ -23,10 +23,10 @@ Usage:
   bash ./scripts/verify_automation_pack_poc.sh [--keep-temp]
 
 What it does:
-  - bootstraps a minimal project without the candidate automation pack
-  - asserts automation remains outside packs.manifest.json and default bootstrap output
-  - injects the vendored GodotE2E addon plus the vendored plugin.gd autoload truth into that temp project
-  - runs the pack-local GodotE2E smoke entry
+  - verifies automation is a non-default optional pack in packs.manifest.json
+  - asserts default bootstrap output does not include GodotE2E or AutomationServer
+  - bootstraps with --packs=automation and validates addon, plugin, autoload, and settings injection
+  - runs the pack-local GodotE2E smoke entry against the generated project
 EOF
 }
 
@@ -186,19 +186,6 @@ assert_vendored_tree_matches_locked_ref() {
   fi
 }
 
-assert_manifest_lacks_automation() {
-  if command -v jq >/dev/null 2>&1; then
-    if jq -e '.packs[] | select(.id == "automation")' "${REPO_ROOT}/packs.manifest.json" >/dev/null; then
-      die "candidate automation pack unexpectedly appears in packs.manifest.json"
-    fi
-    return 0
-  fi
-
-  if grep -q '"id"[[:space:]]*:[[:space:]]*"automation"' "${REPO_ROOT}/packs.manifest.json"; then
-    die "candidate automation pack unexpectedly appears in packs.manifest.json"
-  fi
-}
-
 load_vendored_autoload_truth() {
   local plugin_script="$1"
   local parsed=""
@@ -232,38 +219,41 @@ PY
   AUTOLOAD_ENTRY="${autoload_truth[2]}"
 }
 
-inject_automation_autoload() {
-  local project_file="$1"
-
-  python3 - "${project_file}" "${AUTOLOAD_ENTRY}" <<'PY'
+assert_manifest_defines_optional_automation() {
+  python3 - "${REPO_ROOT}/packs.manifest.json" "${AUTOLOAD_NAME}" "${AUTOLOAD_PATH}" <<'PY'
 from pathlib import Path
+import json
 import sys
 
-project_file = Path(sys.argv[1])
-autoload_line = sys.argv[2]
-lines = project_file.read_text(encoding="utf-8").splitlines()
+manifest_path = Path(sys.argv[1])
+autoload_name = sys.argv[2]
+autoload_path = sys.argv[3]
+manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+packs = {pack.get("id"): pack for pack in manifest.get("packs", [])}
+pack = packs.get("automation")
 
-if any(line.strip() == autoload_line for line in lines):
-    raise SystemExit(0)
+if pack is None:
+    raise SystemExit("automation pack missing from packs.manifest.json")
+if pack.get("default") is not False:
+    raise SystemExit("automation pack must remain non-default")
+if "base" not in pack.get("requires", []):
+    raise SystemExit("automation pack must require base")
+if "godot_e2e" not in pack.get("plugins", []):
+    raise SystemExit("automation pack must enable godot_e2e plugin")
 
-section_start = None
-insert_at = None
-for index, line in enumerate(lines):
-    if line.strip() == "[autoload]":
-        section_start = index
-        insert_at = index + 1
-        break
+autoloads = pack.get("autoloads", [])
+if not any(
+    item.get("name") == autoload_name and item.get("path") == autoload_path
+    for item in autoloads
+):
+    raise SystemExit("automation pack autoload does not match vendored plugin.gd truth")
 
-if section_start is None:
-    if lines and lines[-1] != "":
-        lines.append("")
-    lines.extend(["[autoload]", "", autoload_line])
-else:
-    while insert_at < len(lines) and not lines[insert_at].startswith("["):
-        insert_at += 1
-    lines.insert(insert_at, autoload_line)
-
-project_file.write_text("\n".join(lines) + "\n", encoding="utf-8")
+settings = pack.get("project_settings", [])
+if not any(
+    item.get("path") == "godot_toolbox/automation/enabled" and item.get("value") is True
+    for item in settings
+):
+    raise SystemExit("automation pack must declare godot_toolbox/automation/enabled=true")
 PY
 }
 
@@ -279,48 +269,45 @@ require_file "${REPO_ROOT}/upstreams.lock.json"
 load_automation_lock_metadata
 assert_vendored_tree_matches_locked_ref
 load_vendored_autoload_truth "${REPO_ROOT}/packs/automation/godot/addons/godot_e2e/plugin.gd"
-assert_manifest_lacks_automation
+assert_manifest_defines_optional_automation
 
 WORKDIR="$(mktemp -d "${TMP_ROOT%/}/godot-toolbox-automation-poc.XXXXXX")"
 
-log "bootstrapping minimal temporary project at ${WORKDIR}"
-bash "${REPO_ROOT}/scripts/bootstrap_toolbox_project.sh" "${WORKDIR}"
+log "checking default bootstrap excludes automation"
+default_report="$(bash "${REPO_ROOT}/scripts/bootstrap_toolbox_project.sh" "${WORKDIR}-default" --dry-run-report)"
+[[ ! -e "${WORKDIR}-default" ]] || die "default dry-run unexpectedly created destination"
+grep -Fq "Active packs: base" <<<"${default_report}" || die "default dry-run does not report only base"
+if grep -Fq "${AUTOMATION_PLUGIN_CFG_PATH}" <<<"${default_report}"; then
+  die "default dry-run unexpectedly enables ${AUTOMATION_PLUGIN_CFG_PATH}"
+fi
+if grep -Fq "${AUTOLOAD_NAME}" <<<"${default_report}"; then
+  die "default dry-run unexpectedly includes ${AUTOLOAD_NAME} autoload"
+fi
+
+log "bootstrapping automation optional pack at ${WORKDIR}"
+bash "${REPO_ROOT}/scripts/bootstrap_toolbox_project.sh" "${WORKDIR}" --packs=automation
 
 require_file "${WORKDIR}/godot/project.godot"
 require_file "${WORKDIR}/scripts/gdunit4_smoke.sh"
 
-if [[ -f "${WORKDIR}/.toolbox-packs" ]]; then
-  if [[ -n "$(tr -d '[:space:]' < "${WORKDIR}/.toolbox-packs")" ]]; then
-    die "expected no packs in minimal bootstrap, found: $(cat "${WORKDIR}/.toolbox-packs")"
-  fi
+grep -Fxq "automation" "${WORKDIR}/.toolbox-packs" || die ".toolbox-packs does not record automation"
+[[ -d "${WORKDIR}/godot/addons/godot_e2e" ]] || die "automation bootstrap did not copy godot_e2e addon"
+
+if ! grep -Fq "${AUTOMATION_PLUGIN_CFG_PATH}" "${WORKDIR}/godot/project.godot"; then
+  die "automation bootstrap did not enable ${AUTOMATION_PLUGIN_CFG_PATH}"
 fi
-
-if [[ -e "${WORKDIR}/godot/addons/godot_e2e" ]]; then
-  die "default bootstrap unexpectedly included godot_e2e addon"
-fi
-
-if grep -Fq "${AUTOMATION_PLUGIN_CFG_PATH}" "${WORKDIR}/godot/project.godot"; then
-  die "default bootstrap unexpectedly enabled ${AUTOMATION_PLUGIN_CFG_PATH}"
-fi
-
-if grep -Fq "${AUTOLOAD_ENTRY}" "${WORKDIR}/godot/project.godot"; then
-  die "default bootstrap unexpectedly included ${AUTOLOAD_NAME} autoload"
-fi
-
-log "injecting vendored godot_e2e addon into temporary project"
-mkdir -p "${WORKDIR}/godot/addons"
-cp -R "${REPO_ROOT}/packs/automation/godot/addons/godot_e2e" "${WORKDIR}/godot/addons/"
-
-log "injecting ${AUTOLOAD_NAME} autoload into temporary project"
-inject_automation_autoload "${WORKDIR}/godot/project.godot"
 
 if ! grep -Fq "${AUTOLOAD_ENTRY}" "${WORKDIR}/godot/project.godot"; then
-  die "failed to inject ${AUTOLOAD_NAME} autoload into temporary project"
+  die "automation bootstrap did not include ${AUTOLOAD_NAME} autoload"
+fi
+
+if ! grep -Fq "automation/enabled=true" "${WORKDIR}/godot/project.godot"; then
+  die "automation bootstrap did not set godot_toolbox/automation/enabled=true"
 fi
 
 log "running pack-local GodotE2E smoke"
 E2E_VENV_DIR="${WORKDIR}/.venv-e2e" \
   bash "${REPO_ROOT}/packs/automation/scripts/run_e2e_smoke.sh" "${WORKDIR}/godot"
 
-log "candidate pack remains intentionally outside packs.manifest.json and default bootstrap"
+log "automation pack remains non-default and opt-in"
 log "PASS"

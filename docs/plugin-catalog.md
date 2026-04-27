@@ -46,6 +46,15 @@
 - 用途：打击感、反馈编排、表现层 authoring
 - 适合：需要快速建立 game-feel 工作流的项目
 
+### `automation`
+
+- 插件：`GodotE2E`
+- 版本：`1.1.0`
+- 状态：可选 pack，默认不启用
+- 用途：Python/pytest 驱动的运行时 UI/E2E 自动化
+- 适合：需要从外部进程启动 Godot、等待节点/信号、断言运行中 UI 或主流程的项目
+- 边界：只提供测试自动化入口，不接管玩法、存档、数据或主场景真相
+
 ## Candidate Packs
 
 ### `shell`

@@ -193,6 +193,46 @@
       ]
     },
     {
+      "id": "automation",
+      "kind": "optional-pack",
+      "default": false,
+      "plugins": [
+        "godot_e2e"
+      ],
+      "tooling": [
+        "godot-e2e"
+      ],
+      "requires": [
+        "base"
+      ],
+      "conflicts": [],
+      "autoloads": [
+        {
+          "name": "AutomationServer",
+          "path": "res://addons/godot_e2e/automation_server.gd",
+          "singleton": true
+        }
+      ],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/automation/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [
+        "scripts/verify_automation_pack_poc.sh"
+      ],
+      "godot_version": {
+        "min": "4.6"
+      },
+      "selection_rationale": "GodotE2E 提供真实运行时 UI/E2E 自动化入口，适合需要端到端 agent 验证的项目；默认不启用，避免把 AutomationServer 注入所有 starter。",
+      "when_to_enable": [
+        "需要 pytest 驱动的 Godot 运行时 UI/E2E smoke",
+        "需要 agent 或 CI 操作运行中场景并等待节点/信号"
+      ]
+    },
+    {
       "id": "flow-core",
       "kind": "architecture-core",
       "default": false,

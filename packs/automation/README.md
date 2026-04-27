@@ -1,12 +1,13 @@
-# Automation Candidate Pack
+# Automation Optional Pack
 
-这是 `GodotE2E` 方向的候选 automation pack，当前已经从占位骨架升级成**可运行的最小 PoC**，但它仍然是**独立入口**，不是已经纳入默认链路的正式 pack。
+这是 `GodotE2E` 方向的 opt-in automation pack。它已经纳入 `packs.manifest.json`，但默认不启用；只有显式选择 `--packs=automation` 时才会复制 addon、启用插件并注入 `AutomationServer` autoload。
 
-当前硬约束仍然保持不变：
+当前硬约束：
 
-- **不在** `packs.manifest.json` 中
+- `default=false`
 - **不参与** 默认 `bootstrap` 行为
-- **不接入** 当前默认 CI / 默认验证链
+- **不接入** 当前默认验证链
+- 只能通过显式 `--packs=automation` 进入生成项目
 - 上游来源单独锁定在仓库根目录的 `upstreams.lock.json`，升级也走仓库统一脚本
 
 ## 当前内容
@@ -21,6 +22,12 @@
   pack-local 入口。负责创建 venv、安装依赖、做 Godot import preflight，并调用 `godot-e2e` 运行 smoke。Linux 无图形会话时，若系统存在 `xvfb-run`，会优先通过它启动。
 
 ## 手动运行
+
+先显式组装 automation pack：
+
+```bash
+./scripts/bootstrap_toolbox_project.sh /path/to/new-project --packs=automation
+```
 
 对已经具备 `AutomationServer` autoload 的 Godot 项目，可以独立运行：
 
@@ -60,12 +67,13 @@ bash ./scripts/verify_automation_pack_poc.sh
 这个脚本会：
 
 - 先校验 `upstreams.lock.json`、`requirements-e2e.txt` 与 vendored addon 子树彼此一致
-- bootstrap 一个**不叠加 automation** 的最小临时项目
-- 先断言 `automation` 仍然不在 manifest 与默认 bootstrap 输出中
-- 再把 vendored addon 与 vendored `plugin.gd` 声明的 autoload 真相临时注入到该项目
+- 校验 `packs.manifest.json` 里的 `automation` pack 仍然是非默认 opt-in
+- 先断言默认 bootstrap 输出中没有 `GodotE2E`、`godot_e2e` 插件或 `AutomationServer` autoload
+- 再通过正式 `--packs=automation` bootstrap 路径生成临时项目
+- 校验 addon、插件、autoload 与 `godot_toolbox/automation/enabled=true` 都来自 manifest 渲染
 - 调用 pack-local smoke runner 验证最小闭环
 
-它不会修改当前默认验证链，也不会把 automation 自动接入正式 pack 流程。
+它不会修改当前默认验证链，也不会把 automation 自动接入默认 bootstrap。
 
 ## Upstream / Upgrade
 
@@ -81,7 +89,7 @@ bash ./scripts/verify_automation_pack_poc.sh
 bash ./scripts/update_plugin_from_upstream.sh --id=godot_e2e --dry-run
 ```
 
-真正升级或重导入后，仍然只补跑这个候选 PoC 的独立验证：
+真正升级或重导入后，仍然补跑这个 pack 的独立验证：
 
 ```bash
 bash ./scripts/verify_automation_pack_poc.sh

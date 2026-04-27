@@ -143,6 +143,15 @@ PoC 不要求完整集成，只要求证明这条路径成立。
 当前结论：
 
 - **值得推进**
-- **进入候选 pack PoC**
+- **已从候选 PoC 晋级为非默认 `automation` 可选 pack**
 - **暂不进入 `base`**
 - **暂不修改现有默认验证链**
+
+## Landing Status
+
+当前仓库状态：
+
+- `automation` 已在 `packs.manifest.json` 中声明为 `default=false` 的可选 pack。
+- 显式 `--packs=automation` 会复制 `packs/automation/godot/addons/godot_e2e`，启用 `godot_e2e` 插件，并注入 `AutomationServer` autoload。
+- 默认 bootstrap 仍然不包含 `GodotE2E`、`godot_e2e` 插件或 `AutomationServer`。
+- `scripts/verify_automation_pack_poc.sh` 现在验证正式 opt-in pack 路径，而不是手工临时注入路径。

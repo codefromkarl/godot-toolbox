@@ -154,10 +154,11 @@
 - vendor 目录或 tool metadata 没有意外回退
 - 所有验证仍通过
 
-如果升级的是候选 automation PoC，还要额外确认：
+如果升级的是可选 `automation` pack，还要额外确认：
 
-- `packs.manifest.json` 仍然不包含 `automation`
-- 默认 bootstrap 输出仍然不包含 `godot_e2e`
+- `packs.manifest.json` 仍然声明 `automation.default=false`
+- 默认 bootstrap 输出仍然不包含 `godot_e2e` 或 `AutomationServer`
+- `--packs=automation` 输出仍然包含 `godot_e2e`、`AutomationServer` 与 `godot_toolbox/automation/enabled=true`
 - `bash ./scripts/verify_automation_pack_poc.sh` 仍然通过
 
 ## D. 组装一个新项目
@@ -206,7 +207,7 @@ python3 -m json.tool upstreams.lock.json >/dev/null
 bash ./scripts/verify_bootstrap_flow.sh
 ```
 
-如果本轮改动的是候选 `automation` PoC，再补：
+如果本轮改动的是可选 `automation` pack，再补：
 
 ```bash
 bash ./scripts/verify_automation_pack_poc.sh
@@ -219,7 +220,7 @@ bash ./scripts/verify_automation_pack_poc.sh
 ./scripts/update_plugin_from_upstream.sh --id=<entry_id> --dry-run
 ```
 
-当前候选 automation PoC 的对应命令是：
+`automation` 上游导入/重导入的对应命令是：
 
 ```bash
 ./scripts/import_plugin_from_upstream.sh \

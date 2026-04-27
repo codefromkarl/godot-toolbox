@@ -12,12 +12,11 @@
 - `debug`：`Signal Lens`
 - `stateful`：`Godot State Charts`
 - `juice`：`Sparkle Lite`
+- `automation`：`GodotE2E`，显式选择时提供运行时 UI/E2E 自动化入口，默认不启用
 - `flow-core` / `simulation-core` / `data-core` / `save-core` / `flow-test-kit`：自研复杂游戏架构 scaffold，提供 flow、tick、data registry、save snapshot 与 flow smoke fixture 的最小合约
 
-另外保留两个**候选**方向：
+另外保留一个**候选**方向：
 
-- `packs/automation/`：`GodotE2E` 候选 PoC 骨架，当前**不在** `packs.manifest.json`，也**不参与**默认 bootstrap
-  但其 vendored upstream 已记录在 `upstreams.lock.json`，可单独走升级闭环
 - `packs/shell/`：`Maaack's Game Template` 候选 shell pack，当前**不在** `packs.manifest.json`，也**不接管**默认主场景、autoload 或运行时状态
   但其 vendored upstream 已记录在 `upstreams.lock.json`，用于评估菜单、设置、暂停、加载等通用壳层能力
 
@@ -47,11 +46,12 @@
 
 - `templates/base/`：基础项目模板
 - `packs/`：可选插件 pack
+- `packs/automation/`：`GodotE2E` 可选 pack，显式选择后注入 `AutomationServer` autoload 并提供 pytest E2E smoke
 - `packs/shell/`：候选 shell pack，当前仅锁定 `Maaack's Game Template` 上游与接入策略，不参与默认组装
 - `scripts/bootstrap_toolbox_project.sh`：按 pack 组装新项目
 - `scripts/verify_bootstrap_flow.sh`：验证真实产物链路，覆盖 bootstrap、headless import 和 `gdUnit4` smoke
 - `scripts/verify_game_architecture_packs.sh`：验证自研架构 packs 的 manifest contract、dry-run report、autoload 注入与 bootstrap 产物
-- `scripts/verify_automation_pack_poc.sh`：验证 `packs/automation/` 候选 PoC 骨架，不接入默认验证链
+- `scripts/verify_automation_pack_poc.sh`：验证 `packs/automation/` opt-in bootstrap 与 E2E smoke，不接入默认验证链
 - `scripts/import_plugin_from_upstream.sh`：首次从 upstream 导入插件子树
 - `scripts/update_plugin_from_upstream.sh`：基于 lock 文件升级已纳入插件或候选 PoC 的 vendored 子树
 - `scripts/verify_toolbox_layout.sh`：校验工具箱布局
@@ -105,13 +105,13 @@ bash ./scripts/verify_bootstrap_flow.sh
 
 CI 也跑同一条真实产物链。当前 workflow 固定使用官方 Linux 构建的 Godot `4.6.2`，本地建议保持 `4.6.x`，如果本机 Godot 不在 `PATH`，可通过 `GODOT_BIN=/path/to/godot` 显式指定。
 
-候选 `automation` PoC 走独立入口：
+可选 `automation` pack 走独立验证入口：
 
 ```bash
 bash ./scripts/verify_automation_pack_poc.sh
 ```
 
-这个脚本只验证候选骨架和最小 bootstrap 前提，不会把 `automation` 接到默认 pack 清单里。
+这个脚本验证 `automation` 仍然是显式 opt-in：默认 bootstrap 不包含 `GodotE2E`，而 `--packs=automation` 会复制 addon、启用插件、注入 `AutomationServer` autoload，并运行 pack-local E2E smoke。
 
 ## 维护工具箱
 
@@ -132,7 +132,7 @@ bash ./scripts/verify_automation_pack_poc.sh
 ./scripts/update_plugin_from_upstream.sh --id=signal_lens --version=1.4.1 --dry-run
 ```
 
-候选 `automation` PoC 的上游也已锁定，可以独立预演升级：
+可选 `automation` pack 的上游也已锁定，可以独立预演升级：
 
 ```bash
 ./scripts/update_plugin_from_upstream.sh --id=godot_e2e --dry-run
@@ -151,5 +151,6 @@ bash ./scripts/verify_automation_pack_poc.sh
 - `Signal Lens` 作为调试 pack
 - `Godot State Charts` 作为状态机/架构 pack
 - `Sparkle Lite` 作为表现层 pack
+- `GodotE2E` 作为显式 opt-in automation pack，不进入默认 bootstrap
 - `gdterm` 不纳入工具箱
 - `UITextTokens Validator` 不原样纳入，后续应抽象成 repo-specific validator scaffold

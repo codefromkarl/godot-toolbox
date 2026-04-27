@@ -25,6 +25,8 @@ required_paths=(
   "templates/base/godot/test/gdunit/tooling_smoke_test.gd"
   "templates/base/scripts/gdunit4_smoke.sh"
   "templates/base/godot/addons/gdUnit4/plugin.cfg"
+  "packs/automation/godot/addons/godot_e2e/plugin.cfg"
+  "packs/automation/scripts/run_e2e_smoke.sh"
   "packs/validation/godot/addons/godot_doctor/plugin.cfg"
   "packs/debug/godot/addons/signal_lens/plugin.cfg"
   "packs/stateful/godot/addons/godot_state_charts/plugin.cfg"

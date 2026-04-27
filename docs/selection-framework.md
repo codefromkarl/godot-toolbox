@@ -77,6 +77,8 @@
   - 原因：适合状态图架构项目，但不应强绑到所有 starter
 - `Sparkle Lite` → `juice`
   - 原因：表现层价值明显，但属于特定主题能力
+- `GodotE2E` → `automation`
+  - 原因：端到端运行时自动化价值高，适合 agent/CI 驱动黑盒回归；但会引入 Python 测试栈和额外运行成本，因此默认不启用
 
 ### Candidate Packs
 
