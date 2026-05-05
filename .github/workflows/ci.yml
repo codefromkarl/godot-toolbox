@@ -41,6 +41,12 @@ jobs:
           python3 -m json.tool packs.manifest.json >/dev/null
           python3 -m json.tool upstreams.lock.json >/dev/null
 
+      - name: Install uv
+        run: pip install uv
+
+      - name: Check GDScript lint and format
+        run: bash templates/base/scripts/gdscript_toolkit_check.sh
+
       - name: Verify toolbox layout
         run: bash ./scripts/verify_toolbox_layout.sh
 

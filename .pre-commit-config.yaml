@@ -1,0 +1,39 @@
+# godot-toolbox pre-commit hooks
+# Install: pip install -e '.[dev]' && pre-commit install
+# Run:     pre-commit run --all-files
+
+repos:
+  - repo: local
+    hooks:
+      # Shell syntax check — all project shell scripts
+      - id: shell-syntax-check
+        name: Shell syntax check
+        entry: bash -n
+        language: system
+        types: [shell]
+        files: ^(scripts/|templates/base/scripts/)
+
+      # JSON syntax check — core manifest and lock files only
+      - id: json-syntax-check
+        name: JSON syntax check
+        entry: python3 -m json.tool
+        language: system
+        files: ^(packs\.manifest\.json|upstreams\.lock\.json)$
+
+      # GDScript lint — project-owned code only (excludes vendored addons)
+      # Covers: packs/*/godot/addons/godot_toolbox_architecture/**/*.gd
+      #         templates/base/godot/test/**/*.gd
+      - id: gdlint
+        name: gdlint (project-owned GDScript)
+        entry: bash -c 'uv tool run --from "gdtoolkit==4.5.0" gdlint "$@"' --
+        language: system
+        files: ^(packs/.+/godot/addons/godot_toolbox_architecture/|templates/base/godot/test/).*\.gd$
+        pass_filenames: true
+
+      # GDScript format check — project-owned code only
+      - id: gdformat-check
+        name: gdformat --check (project-owned GDScript)
+        entry: bash -c 'uv tool run --from "gdtoolkit==4.5.0" gdformat --check "$@"' --
+        language: system
+        files: ^(packs/.+/godot/addons/godot_toolbox_architecture/|templates/base/godot/test/).*\.gd$
+        pass_filenames: true
