@@ -54,7 +54,7 @@ This prevents future projects from hiding core game truth inside a third-party p
 | --- | --- | --- | --- |
 | `input` | `G.U.I.D.E` | Non-default optional pack | Good fit for unified input across devices. Bootstrap injection contract now exists. |
 | `quest` | `QuestSystem` | Non-default optional pack | Good resource-based quest model. Bootstrap contract now exists; project truth still needs save/event adapters. |
-| `dialogue` | `Dialogue Manager` | Candidate, wait for v4 maturity | Strong stateless dialogue model. Do not promote until Godot 4.6+ requirement and release status are acceptable. |
+| `dialogue` | `Dialogue Manager` | Non-default optional pack (v3.10.4) | Vendored as opt-in dialogue pack. Requires `data-core`, `save-core`, `rules-events-core` adapters. |
 | `inventory` | `GLoot` | Non-default optional pack | Useful for RPG/sim projects. Keep out of base and bridge through project-owned item/save adapters. |
 | `save` | `SaveState Lite`, GDQuest resource save pattern, Godot docs | Optional pack plus references | Save correctness is core truth; SaveState Lite is opt-in tooling/reference, while `save-core` owns the contract. |
 | `data` | `Pandora`, Godot Resource pattern | Reference only initially | Pandora is alpha and RPG-scoped. Build a smaller generic registry/resource scaffold first. |
@@ -288,6 +288,7 @@ Exit criteria:
 Deliverables:
 
 - Evaluate `dialogue` once Dialogue Manager 4 maturity is acceptable.
+- `Dialogue Manager` has been vendored as a non-default `dialogue` pack (v3.10.4); adapter tests for dialogue events crossing `rules-events-core`/`data-core`/`save-core` remain a follow-up task.
 - `GLoot` has been vendored as a non-default `inventory` pack.
 - `SaveState Lite` has been vendored as a non-default `save-state-lite` pack.
 - Add `rules-events-core` before integrating quest/dialogue deeply.
@@ -327,7 +328,7 @@ Exit criteria:
 
 ## Current Recommendation
 
-The next useful repository work is not adding `dialogue`, `inventory`, or `quest` immediately.
+The next useful repository work is not adding `inventory` or `quest` immediately (both are done).
 
 The next useful work is:
 

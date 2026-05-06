@@ -55,6 +55,15 @@
 - 适合：需要从外部进程启动 Godot、等待节点/信号、断言运行中 UI 或主流程的项目
 - 边界：只提供测试自动化入口，不接管玩法、存档、数据或主场景真相
 
+### `ai-testing`
+
+- 插件：无，自研 architecture-test-kit
+- 状态：可选 pack，默认不启用
+- 用途：策略驱动探索测试、覆盖率追踪和 Bug 发现模板
+- 适合：需要 AI 驱动的游戏机制探索、覆盖率引导的自动化测试或策略驱动的压力测试的项目
+- 边界：提供测试框架和策略原语，不接管 gameplay 真相、存档、数据或主场景；消费者实现自己的 `TestEnvironment` 和 `HeuristicPolicy`
+- 依赖：`automation` pack（提供 godot-e2e TCP 桥接）
+
 ### `input`
 
 - 插件：`G.U.I.D.E`
@@ -79,6 +88,7 @@
 - 用途：菜单、暂停、modal、loading shell primitives
 - 适合：需要 app shell 起点但不能让第三方模板接管主场景和业务状态的项目
 - 边界：不接管 `run/main_scene`、FlowCore stack、save truth 或项目 UI 文案
+- Recipe：`docs/ui-game-shell-recipe.md` 定义从 shell candidate 吸收菜单/暂停/设置/加载思路的受控路线
 
 ### `inventory`
 
@@ -122,6 +132,18 @@
 
 ## Candidate Packs
 
+Dialogic is tracked only as a future dialogue candidate/reference input in `docs/dialogue-pack-candidate-plan.md`; it is not vendored, not default-enabled, and cannot own campaign truth, save schema, or event truth.
+
+### `dialogue`
+
+- 插件：`Dialogue Manager`
+- 版本：`v3.10.4`
+- 状态：可选 pack，默认不启用
+- 来源：<https://github.com/nathanhoad/godot_dialogue_manager>
+- 用途：对话图/文本资源 authoring、运行时 line playback、choices 和 conversation-local variables
+- 适合：需要对话 authoring/runtime，但仍希望通过 `rules-events-core`、`data-core` 和 `save-core` 持有项目真相的 RPG/冒险项目
+- 边界：不接管 campaign truth、全局剧情进度、存档格式、持久事件历史或 quest/inventory 真相
+
 ### `shell`
 
 - 插件：`Maaack's Game Template`
@@ -130,6 +152,7 @@
 - 用途：主菜单、设置菜单、暂停菜单、Credits、加载页、开场页、输入映射和持久设置参考
 - 适合：已有项目选择性吸收 app shell 能力，或新项目评估菜单/设置壳层起步方案
 - 边界：不接管业务运行时、主场景、autoload、存档真相或玩法状态
+- Recipe：`docs/ui-game-shell-recipe.md` 明确其仅为 candidate/reference，默认产品化路线是 `ui-game-shell`
 
 ## Excluded
 

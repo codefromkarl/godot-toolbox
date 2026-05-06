@@ -14,6 +14,7 @@ The target is not to turn `godot-toolbox` into one fixed RPG framework. The targ
 | `quest` | [QuestSystem](https://github.com/shomykohai/quest-system) | `2.0.1.4_4` | Resource-based quest system with a clear addon subtree and tests upstream. | Campaign truth, quest event mapping, and quest persistence must bridge through `rules-events-core` and `save-core`. |
 | `ai-behavior` | [Beehave](https://github.com/bitbrain/beehave) | `v2.9.2` | Mature behavior-tree addon for projects needing explicit AI authoring. | Basic turn-based enemy AI should start self-owned; behavior trees are optional once behavior complexity justifies them. |
 | `save-state-lite` | [SaveState Lite](https://github.com/youssof20/savestate) | `v1.2.0` | Useful SaveManager, atomic writer, save browser, and component patterns. | It is an isolated alternative save tooling pack because it defines `SaveSlot`, which conflicts with `save-core`; `save-core` remains the default RPG persistence contract. |
+| `dialogue` | [Dialogue Manager](https://github.com/nathanhoad/godot_dialogue_manager) | `v3.10.4` | Mature dialogue graph/text resource authoring and runtime line playback. | Dialogue state must bridge through `rules-events-core`, `data-core`, and `save-core` before becoming project truth. |
 
 All absorbed packs are non-default. They only enter a generated project through explicit `--packs=...` selection.
 
@@ -26,7 +27,7 @@ All absorbed packs are non-default. They only enter a generated project through 
 | `beehave` | <https://github.com/bitbrain/beehave> | `v2.9.2` | `addons/beehave` | `packs/ai-behavior/godot/addons/beehave` | `ai-behavior` | Vendored optional pack, explicit opt-in. |
 | `savestate_lite` | <https://github.com/youssof20/savestate> | `v1.2.0` | `addons/savestate` | `packs/save-state-lite/godot/addons/savestate` | `save-state-lite` | Vendored optional pack, explicit opt-in, conflicts with `save-core`. |
 | `pandora` | <https://github.com/bitbrain/pandora> | Reference only | Not vendored | `packs/data-core` references only | none | Reference for RPG data taxonomy; no runtime dependency. |
-| `dialogue_manager` | <https://github.com/nathanhoad/godot_dialogue_manager> | Reference only | Not vendored | future `packs/dialogue` candidate | none | Deferred dialogue candidate. |
+| `dialogue_manager` | <https://github.com/nathanhoad/godot_dialogue_manager> | `v3.10.4` | `addons/dialogue_manager` | `packs/dialogue/godot/addons/dialogue_manager` | `dialogue` | Vendored optional pack, explicit opt-in. |
 | `dialogic` | <https://github.com/dialogic-godot/dialogic> | Reference only | Not vendored | future dialogue/VN candidate | none | Reference for heavier dialogue/VN workflows. |
 | `gdquest_open_rpg` | <https://github.com/gdquest-demos/godot-open-rpg> | Reference only | Not vendored | design reference only | none | Reference for simple RPG scene/data/combat organization. |
 | `gdquest_save_guide` | <https://www.gdquest.com/library/save_game_godot4/> | Reference only | Not vendored | `save-core` references only | none | Reference for save resource patterns. |
@@ -39,7 +40,7 @@ All absorbed packs are non-default. They only enter a generated project through 
 | Direction | Source | Why reference-only |
 | --- | --- | --- |
 | RPG data taxonomy | [Pandora](https://github.com/bitbrain/pandora) | Useful data-management ideas, but too RPG-scoped and not the generic `data-core` truth. |
-| Dialogue | [Dialogue Manager](https://github.com/nathanhoad/godot_dialogue_manager) | Strong candidate, but should remain deferred until the target Godot version and release maturity are acceptable for this template. |
+| Dialogue | [Dialogue Manager](https://github.com/nathanhoad/godot_dialogue_manager) | Absorbed as non-default `dialogue` pack (v3.10.4). Dialogue state must bridge through `rules-events-core`, `data-core`, and `save-core` before becoming project truth. |
 | Dialogue/VN | [Dialogic](https://github.com/dialogic-godot/dialogic) | Powerful but heavier than the current RPG battle template goal; keep as a future dialogue/VN candidate. |
 | Save design | [GDQuest save guide](https://www.gdquest.com/library/save_game_godot4/) and [Godot save docs](https://docs.godotengine.org/en/4.0/tutorials/io/saving_games.html) | Good persistence cautions and patterns, but `save-core` should own the minimal facade. |
 | Flow transitions | [Scene Manager](https://github.com/glass-brick/Scene-Manager) | Good transition reference, but `flow-core` owns game mode/result semantics. |
@@ -122,7 +123,7 @@ Own evidence that the template is actually usable:
 
 The repository can claim `RPG-ready shell` when:
 
-- `inventory`, `quest`, `ai-behavior`, and isolated `save-state-lite` bootstrap as opt-in packs.
+- `inventory`, `quest`, `ai-behavior`, `dialogue`, and isolated `save-state-lite` bootstrap as opt-in packs.
 - `rpg-core` and `rpg-battle-core` have runnable smoke tests.
 - A generated project can run one complete battle, grant rewards, save, reload, and preserve party state.
 

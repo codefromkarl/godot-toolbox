@@ -23,6 +23,14 @@ Optional packs:
 - `quest`: QuestSystem resources. Persist quest progress through `rpg-save-adapter` and `save-core`.
 - `ai-behavior`: Beehave authoring for behavior-tree AI. The default deterministic battle core must still work without it.
 - `save-state-lite`: alternative save tooling/reference only. It is not part of the default RPG save path.
+- `dialogue`: Dialogue Manager authoring/runtime for dialogue graphs, text resources, and line playback. Dialogue state must bridge through `rules-events-core`, `data-core`, and `save-core` adapters.
+
+Art/audio status:
+
+- The minimal RPG recipe supplies first-party RPG state, battle, save, UI smoke, and example gameplay data.
+- It does not vendor a complete RPG art/audio library for characters, monsters, scenes, tilesets, battle backgrounds, fonts, SFX, or BGM.
+- Candidate CC0/open-source art/audio sources are recorded in `docs/rpg-art-asset-sources.md`.
+- RPG example content authoring boundaries are recorded in `docs/rpg-content-authoring.md`; sample content is teaching/fixture data, not balance or release content.
 
 Install order:
 
@@ -86,4 +94,4 @@ Not allowed from this quickstart alone:
 - Human playtest claims.
 - Release claims.
 
-Use `docs/rpg-experience-review.md` if separate human or AI-assisted Experience review evidence is needed.
+Use `docs/rpg-experience-review.md` if separate human or AI-assisted Experience review evidence is needed. Use `docs/rpg-playable-sample-recipe.md` for the route that separates the current automated Interaction sample from the future Experience/playable sample plan.

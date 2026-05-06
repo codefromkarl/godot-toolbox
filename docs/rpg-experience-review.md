@@ -20,6 +20,26 @@ Not allowed from automation alone:
 
 Experience review must add human or AI-assisted playtest notes that inspect clarity, usability, pacing, affordances, sample-content usefulness, and issue reproducibility. Screenshots or video may be attached when captured, but this initial record does not fabricate visual artifacts.
 
+## Completion Language
+
+Allowed completion language for this document:
+
+- `Experience evidence carrier exists`
+- `Experience session schema exists`
+- `Experience review is not_claimed`
+- `Experience review is partial`
+- `human/AI-assisted Experience review remains required`
+
+Forbidden completion language unless a later real session record includes reviewer notes and actual artifacts:
+
+- `playable`
+- `release-ready`
+- `Experience-complete`
+- `Release-ready`
+- `ready to ship`
+
+The current document may describe how to collect those claims, but it must not state that they have been achieved.
+
 ## Evidence Schema
 
 Each review evidence record must include these fields:
@@ -34,6 +54,10 @@ artifact_paths:
   - "relative/repository path to commands, logs, screenshots, UI tree notes, state dumps, or receipts"
 notes: "short reviewer notes, including what was and was not observed"
 ```
+
+Minimum Experience session fields are `timestamp`, `session_id`, `phase`, `actor`, `status`, `artifact_paths`, `notes`, and `claim_boundary`. A session is incomplete when any of those fields are missing or blank after the review is recorded.
+
+`artifact_paths` must only contain repository-relative paths such as `docs/rpg-final-acceptance-receipt.md`, `docs/artifacts/rpg/session-001-ui-tree.json`, or `packs/rpg-test-kit/...`. Do not use local absolute paths, local URL references, home-directory paths, or temporary machine paths in repository documents. If an artifact cannot be committed, record a relative placeholder path and mark the session `blocked` or `needs_followup` instead of claiming completion.
 
 ## Playtest Issue Schema
 
@@ -77,6 +101,8 @@ claim_boundary:
   playable_claim: "not_claimed | reviewed"
   release_ready_claim: "not_claimed"
 ```
+
+Use `experience_claim: "not_claimed"` for a schema-only or artifact-only setup session. Use `experience_claim: "partial"` only when real reviewer notes or artifacts exist for at least one phase. Do not use `playable_claim: "reviewed"` without a specific session record explaining what was reviewed and which relative artifacts support it. `release_ready_claim` remains `not_claimed` in this evidence carrier.
 
 ## Initial Review Record
 

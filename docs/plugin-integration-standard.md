@@ -66,4 +66,49 @@
 
 - 默认不改 vendor 行为代码
 - 若必须 patch，要记录原因、范围和升级时的重放方式
-- 一旦出现行为 patch，就按“受维护 fork”看待
+- 一旦出现行为 patch，就按"受维护 fork"看待
+
+## Autoload 命名隔离规范
+
+### 问题
+
+Godot 4.6 headless/CLI 模式下，autoload 注册名与 `class_name` 同名会触发硬性 Parse Error
+（"Class X hides an autoload singleton"），阻塞 gdUnit4 等测试框架的脚本加载。
+
+Editor 模式仅警告，headless 模式直接报错——这是 Godot 解析器在不同上下文中的行为差异。
+
+### 规则
+
+**autoload 注册名 ≠ class_name**
+
+| 层面 | 命名策略 | 示例 |
+|------|---------|------|
+| Autoload 注册名 | 业务用途，短小精悍 | `FlowCore`, `DataCore` |
+| `class_name` | 注册名 + 后缀 | `FlowCoreService`, `DataCoreService` |
+
+### 已有实践
+
+Toolbox 的 8 个 autoload 单例已遵循此模式：
+- `FlowCore` → `class_name FlowCoreService`
+- `SimulationCore` → `class_name SimulationCoreService`
+- `DataCore` → `class_name DataCoreService`
+- ...
+
+项目自研 autoload 必须遵循相同模式。
+
+### 检测工具
+
+- 脚本：`scripts/autoload_name_check.py`（扫描 `project.godot` + `.gd` 文件的 `class_name`）
+- 集成：pre-commit hook（`autoload-name-check`）
+- CI：作为测试前置步骤
+
+### 调用方式
+
+业务代码无需改动——autoload 注册名不变：
+```gdscript
+# 正常调用 autoload 实例方法
+ContentBridge.get_tile("meadow")
+
+# 类型提示使用 class_name
+var bridge: ContentBridgeService = get_node("/root/ContentBridge")
+```

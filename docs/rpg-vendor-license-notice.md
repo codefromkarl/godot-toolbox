@@ -2,6 +2,8 @@
 
 This file records license, NOTICE, local target, and patch policy details for RPG-related vendored optional packs. These packs remain non-default and are selected explicitly through `--packs=...`.
 
+This file covers vendored functional packs, not external art/audio candidates. RPG demo art/audio sources are tracked separately in `docs/rpg-art-asset-sources.md` until a concrete asset pack is imported.
+
 ## Summary
 
 | Pack | Upstream | Version | Local target | License | NOTICE summary |
@@ -10,6 +12,7 @@ This file records license, NOTICE, local target, and patch policy details for RP
 | `quest` | `QuestSystem` at <https://github.com/shomykohai/quest-system> | `2.0.1.4_4` | `packs/quest/godot/addons/quest_system` | MIT | Vendored subtree includes `LICENSE`; no separate NOTICE file is required by the current subtree. |
 | `ai-behavior` | `Beehave` at <https://github.com/bitbrain/beehave> | `v2.9.2` | `packs/ai-behavior/godot/addons/beehave` | MIT | Vendored subtree includes `LICENSE`; no separate NOTICE file is required by the current subtree. |
 | `save-state-lite` | `SaveState Lite` at <https://github.com/youssof20/savestate> | `v1.2.0` | `packs/save-state-lite/godot/addons/savestate` | MIT | No separate NOTICE file is vendored in the selected `addons/savestate` subtree. Preserve upstream attribution in pack docs and lock metadata. |
+| `dialogue` | `Dialogue Manager` at <https://github.com/nathanhoad/godot_dialogue_manager> | `v3.10.4` | `packs/dialogue/godot/addons/dialogue_manager` | MIT | No separate NOTICE file is vendored in the selected `addons/dialogue_manager` subtree. Preserve upstream attribution in pack docs and lock metadata. |
 
 ## SaveState Lite Patch Policy
 

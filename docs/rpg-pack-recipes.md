@@ -2,7 +2,7 @@
 
 These recipes are executable dry-run entrypoints for RPG project assembly. Use them before generating a real project so dependencies, autoloads, project settings, verification entries, and conflicts are visible.
 
-For the minimal productized RPG template path, start with `docs/rpg-template-quickstart.md`; this page keeps the individual pack combination recipes.
+For the minimal productized RPG template path, start with `docs/rpg-template-quickstart.md`; for the current automated Interaction sample and future Experience/playable sample route, see `docs/rpg-playable-sample-recipe.md`. This page keeps the individual pack combination recipes.
 
 ## Minimal RPG Battle Shell
 
@@ -59,3 +59,13 @@ Use when project enemy/NPC AI needs Beehave behavior-tree authoring. The default
 ```
 
 `save-state-lite` conflicts with `save-core`; do not combine it with the default RPG save path unless one side is adapted or namespaced.
+
+## RPG With Dialogue Authoring
+
+```bash
+./scripts/bootstrap_toolbox_project.sh ../godot-toolbox-rpg-preview \
+  --packs=dialogue,data-core,save-core,rules-events-core,rpg-save-adapter,rpg-core \
+  --dry-run-report
+```
+
+Use when a project wants Dialogue Manager resources for dialogue graph/text authoring and runtime line playback. Dialogue state must bridge through `rules-events-core` and `rpg-save-adapter` before becoming project truth.

@@ -13,15 +13,21 @@ The links are also mirrored in `packs.manifest.json` under `open_source_referenc
 | `inventory` | GLoot | <https://github.com/peter-kish/gloot> | Landed as non-default `inventory` pack; RPG item/equipment truth stays project-owned. |
 | `ai` | Beehave | <https://github.com/bitbrain/beehave> | Landed as non-default `ai-behavior` pack; optional for complex behavior authoring. |
 | `save` | SaveState Lite | <https://github.com/youssof20/savestate> | Landed as non-default `save-state-lite` pack; isolated from `save-core` due to `SaveSlot` class conflict. |
+| `dialogue` | Dialogue Manager | <https://github.com/nathanhoad/godot_dialogue_manager> | Landed as non-default `dialogue` pack; requires adapters before owning project dialogue state. |
 
 Specialized gameplay packs remain non-default. Promotion to default is not allowed unless the toolbox owns the corresponding data, save, event, and verification contract.
+
+## Art And Audio Asset Sources
+
+RPG demo art/audio candidates are tracked separately in `docs/rpg-art-asset-sources.md`. They are source links only until a concrete optional asset pack is imported with license/NOTICE records.
 
 ## Candidate Optional Packs
 
 | Direction | Upstream | Link | Current repository action |
 | --- | --- | --- | --- |
-| `dialogue` | Dialogue Manager | <https://github.com/nathanhoad/godot_dialogue_manager> | Deferred candidate; watch Godot 4.6+ v4 maturity. |
 | `dialogue` | Dialogic | <https://github.com/dialogic-godot/dialogic> | Reference candidate for heavier dialogue/VN workflows. |
+
+Dialogic candidate governance is tracked in `docs/dialogue-pack-candidate-plan.md`; these links remain reference/candidate only and do not grant campaign truth, save schema, event truth, vendoring, or default bootstrap authority.
 
 ## Reference-Only Inputs
 
@@ -45,4 +51,4 @@ The current small functional integration is toolbox-owned rather than direct ven
 - `flow-test-kit` provides a runner-agnostic smoke fixture for mode/result payload checks.
 - `rules-events-core` provides event/condition/effect execution boundaries for future quest, dialogue, inventory, and simulation hooks.
 - `ui-game-shell` provides app-shell primitives without adopting the candidate Maaack template as runtime truth.
-- `inventory`, `quest`, `ai-behavior`, and `save-state-lite` provide opt-in third-party addon surfaces, while RPG combat/character/save adapters remain self-owned.
+- `inventory`, `quest`, `ai-behavior`, `save-state-lite`, and `dialogue` provide opt-in third-party addon surfaces, while RPG combat/character/save adapters remain self-owned.
