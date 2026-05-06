@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from collections import OrderedDict, defaultdict
 from pathlib import Path
@@ -95,6 +96,30 @@ def normalize_selected(raw_packs: str | None, packs: OrderedDict[str, dict[str, 
                 selected.append(pack_id)
                 seen.add(pack_id)
     return selected
+
+
+_CLASS_NAME_RE = re.compile(r"^class_name\s+(\w+)", re.MULTILINE)
+
+
+def _check_autoload_classname_conflict(
+    pack_id: str, autoload_name: str, script_path: Path, errors: list[str]
+) -> None:
+    """检测 autoload 注册名与 class_name 同名冲突。
+
+    Godot 4.6 headless/CLI: 同名触发 "Class X hides an autoload singleton" Parse Error。
+    规范: autoload 注册名(业务用途) ≠ class_name(类型定义 + 后缀)。
+    """
+    try:
+        source = script_path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return
+    m = _CLASS_NAME_RE.search(source)
+    if m and m.group(1) == autoload_name:
+        errors.append(
+            f"pack '{pack_id}' autoload '{autoload_name}' has same-name class_name "
+            f"in {script_path.name}. Rename class_name to '{autoload_name}Service' "
+            f"or another distinct name to avoid headless Parse Error."
+        )
 
 
 def validate_manifest(manifest: dict[str, Any]) -> OrderedDict[str, dict[str, Any]]:
@@ -202,6 +227,19 @@ def validate_manifest(manifest: dict[str, Any]) -> OrderedDict[str, dict[str, An
                 errors.append(f"pack '{pack_id}' autoload '{name}' path must start with res://")
             if "singleton" in autoload and not isinstance(autoload["singleton"], bool):
                 errors.append(f"pack '{pack_id}' autoload '{name}' singleton must be a boolean")
+
+            # Autoload 命名隔离检查：autoload 注册名 ≠ class_name
+            # Godot 4.6 headless/CLI: 同名触发 "Class X hides an autoload singleton" Parse Error
+            script_rel = path.replace("res://", "")
+            # 检查两个可能的路径：pack 内源文件 或 组装后的项目根
+            script_candidates = [
+                REPO_ROOT / "packs" / pack_id / "godot" / script_rel,
+                REPO_ROOT / script_rel,
+            ]
+            for script_path in script_candidates:
+                if script_path.is_file() and script_path.suffix == ".gd":
+                    _check_autoload_classname_conflict(pack_id, name, script_path, errors)
+                    break
 
         seen_setting_paths: set[str] = set()
         for setting in pack.get("project_settings", []):

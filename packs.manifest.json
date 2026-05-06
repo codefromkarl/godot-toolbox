@@ -92,7 +92,9 @@
         }
       ],
       "input_map": [],
-      "verification": [],
+      "verification": [
+        "scripts/verify_vendor_optional_packs.sh"
+      ],
       "godot_version": {
         "min": "4.6"
       },
@@ -122,7 +124,9 @@
         }
       ],
       "input_map": [],
-      "verification": [],
+      "verification": [
+        "scripts/verify_vendor_optional_packs.sh"
+      ],
       "godot_version": {
         "min": "4.6"
       },
@@ -152,7 +156,9 @@
         }
       ],
       "input_map": [],
-      "verification": [],
+      "verification": [
+        "scripts/verify_vendor_optional_packs.sh"
+      ],
       "godot_version": {
         "min": "4.6"
       },
@@ -182,7 +188,9 @@
         }
       ],
       "input_map": [],
-      "verification": [],
+      "verification": [
+        "scripts/verify_vendor_optional_packs.sh"
+      ],
       "godot_version": {
         "min": "4.6"
       },
@@ -230,6 +238,44 @@
       "when_to_enable": [
         "需要 pytest 驱动的 Godot 运行时 UI/E2E smoke",
         "需要 agent 或 CI 操作运行中场景并等待节点/信号"
+      ]
+    },
+    {
+      "id": "ai-testing",
+      "kind": "architecture-test-kit",
+      "default": false,
+      "plugins": [],
+      "tooling": [],
+      "requires": [
+        "base",
+        "automation"
+      ],
+      "conflicts": [],
+      "autoloads": [
+        {
+          "name": "AITestingCore",
+          "path": "res://addons/godot_toolbox_architecture/ai_testing/ai_testing.gd",
+          "singleton": true
+        }
+      ],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/ai_testing/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [
+        "scripts/verify_ai_testing_pack.sh"
+      ],
+      "godot_version": {
+        "min": "4.6"
+      },
+      "selection_rationale": "AI 自动化测试框架，提供策略驱动探索、覆盖率追踪和 Bug 发现模板。构建在 automation pack 的 godot-e2e TCP 桥接之上。消费者实现自己的环境/策略钩子。",
+      "when_to_enable": [
+        "需要 AI 驱动的游戏机制探索测试",
+        "需要覆盖率引导的自动化测试",
+        "需要策略驱动的压力测试和 Bug 发现"
       ]
     },
     {
@@ -536,6 +582,36 @@
       "selection_rationale": "自研 RPG 验证 pack，集中放置 battle replay、combat event stream、state dump、save roundtrip 和 UI smoke fixture，避免只凭文件存在宣称 RPG-ready。"
     },
     {
+      "id": "rpg-art-demo",
+      "kind": "optional-pack",
+      "default": false,
+      "plugins": [],
+      "tooling": [],
+      "requires": [
+        "base"
+      ],
+      "conflicts": [],
+      "autoloads": [],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/rpg_art_demo/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [
+        "scripts/verify_rpg_art_demo_pack.sh"
+      ],
+      "godot_version": {
+        "min": "4.6"
+      },
+      "selection_rationale": "First-party placeholder art/audio scaffold for RPG demo import policy validation. It is opt-in, carries no third-party assets, and must not define RPG stats, item IDs, save schemas, or battle rules.",
+      "when_to_enable": [
+        "需要验证 RPG 美术/音频导入目录、license/NOTICE 策略和 bootstrap overlay",
+        "准备后续导入 CC0 RPG art/audio，但尚未 vendor 真实第三方素材"
+      ]
+    },
+    {
       "id": "flow-test-kit",
       "kind": "architecture-test-kit",
       "default": false,
@@ -760,6 +836,41 @@
         "需要 SaveManager、atomic writer、save browser 或 saveable component 参考实现",
         "明确选择 SaveState Lite 作为独立存档工具，而不是同时启用 save-core"
       ]
+    },
+    {
+      "id": "dialogue",
+      "kind": "optional-pack",
+      "default": false,
+      "plugins": [
+        "dialogue_manager"
+      ],
+      "tooling": [],
+      "requires": [
+        "base",
+        "data-core",
+        "save-core",
+        "rules-events-core"
+      ],
+      "conflicts": [],
+      "autoloads": [],
+      "project_settings": [
+        {
+          "path": "godot_toolbox/dialogue/enabled",
+          "value": true
+        }
+      ],
+      "input_map": [],
+      "verification": [
+        "scripts/verify_dialogue_pack.sh"
+      ],
+      "godot_version": {
+        "min": "4.6"
+      },
+      "selection_rationale": "Vendored Dialogue Manager as opt-in dialogue authoring/runtime pack. Dialogue state must be bridged through rules-events-core and save-core before becoming project truth.",
+      "when_to_enable": [
+        "需要对话图/文本资源 authoring 和运行时 line playback",
+        "已有明确 dialogue/save/event adapter 边界"
+      ]
     }
   ],
   "open_source_references": [
@@ -781,8 +892,8 @@
       "id": "dialogue_manager",
       "pack_direction": "dialogue",
       "url": "https://github.com/nathanhoad/godot_dialogue_manager",
-      "status": "deferred-candidate",
-      "absorption_mode": "wait for Godot 4.6+ v4 maturity"
+      "status": "optional-pack",
+      "absorption_mode": "vendored as non-default dialogue pack; requires data-core/save-core/rules-events-core adapters before owning project dialogue state"
     },
     {
       "id": "gloot",

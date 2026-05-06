@@ -164,15 +164,18 @@
     },
     {
       "id": "dialogue_manager",
-      "kind": "reference",
+      "kind": "plugin",
       "source": {
         "type": "git",
-        "url": "https://github.com/nathanhoad/godot_dialogue_manager"
+        "url": "https://github.com/nathanhoad/godot_dialogue_manager",
+        "version": "v3.10.4",
+        "ref": "v3.10.4"
       },
       "integration": {
-        "mode": "candidate-reference",
-        "target": "packs/dialogue",
-        "note": "Deferred until Godot 4.6+ v4 maturity is acceptable."
+        "mode": "vendor-subtree",
+        "target": "packs/dialogue/godot/addons/dialogue_manager",
+        "note": "Optional dialogue pack source; explicit bootstrap only; dialogue state must integrate through save-core/rules-events-core adapters.",
+        "source_subdir": "addons/dialogue_manager"
       },
       "patches": []
     },
