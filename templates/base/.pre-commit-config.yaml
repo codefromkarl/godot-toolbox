@@ -1,0 +1,40 @@
+# Godot Toolbox pre-commit hooks
+# Install: pip install -e '.[dev]' && pre-commit install
+# Run:     pre-commit run --all-files
+
+repos:
+  - repo: local
+    hooks:
+      # Shell syntax check
+      - id: shell-syntax-check
+        name: Shell syntax check
+        entry: bash -n
+        language: system
+        types: [shell]
+        files: ^scripts/
+
+      # JSON syntax check — game content data
+      - id: json-syntax-check
+        name: JSON syntax check
+        entry: python3 -m json.tool
+        language: system
+        files: ^godot/content/.*\.json$
+
+      # GDScript lint + format + API semantic check — unified
+      - id: gdscript-toolkit-check
+        name: gdscript toolkit check (lint + format + API)
+        entry: scripts/gdscript_toolkit_check.sh
+        language: system
+        files: ^godot/.*\.gd$
+        exclude: ^godot/(?:\.godot/|\.godot-mcp/|\.godot-mcp-src/|addons/)
+        require_serial: true
+
+      # Autoload 命名冲突检测 — autoload 注册名 ≠ class_name
+      # Godot 4.6 headless/CLI: 同名触发 "Class X hides an autoload singleton" Parse Error
+      - id: autoload-name-check
+        name: autoload/class_name naming conflict check
+        entry: python3 scripts/autoload_name_check.py godot/
+        language: system
+        files: ^godot/(?:project\.godot|scripts/.*\.gd)$
+        pass_filenames: false
+        require_serial: true

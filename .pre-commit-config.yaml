@@ -37,3 +37,11 @@ repos:
         language: system
         files: ^(packs/.+/godot/addons/godot_toolbox_architecture/|templates/base/godot/test/).*\.gd$
         pass_filenames: true
+
+      # GDScript API semantic check — prevents Node/Dictionary API confusion
+      - id: gdscript-api-check
+        name: gdscript API semantic check
+        entry: python3 scripts/gdscript_api_check.py
+        language: system
+        files: ^(packs/.+/godot/addons/godot_toolbox_architecture/|templates/base/godot/test/).*\.gd$
+        pass_filenames: true

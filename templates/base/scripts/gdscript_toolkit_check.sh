@@ -76,3 +76,7 @@ echo "[gdscript-toolkit-check] Running gdformat --check on ${#targets[@]} file(s
 run_gdtool gdformat --check "${targets[@]}"
 
 echo "[gdscript-toolkit-check] PASS"
+
+# Run GDScript API semantic check
+echo "[gdscript-toolkit-check] Running API semantic check on ${#targets[@]} file(s)"
+python3 "${REPO_ROOT}/scripts/gdscript_api_check.py" "${targets[@]}"
