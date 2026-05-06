@@ -3,8 +3,8 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 REVIEW="${REPO_ROOT}/docs/rpg-experience-review.md"
-README="${REPO_ROOT}/README.md"
-RECEIPT="${REPO_ROOT}/docs/rpg-final-acceptance-receipt.md"
+SESSION_TEMPLATE="${REPO_ROOT}/docs/rpg-experience-session-template.md"
+PLAYTEST_CHECKLIST="${REPO_ROOT}/docs/rpg-experience-playtest-checklist.md"
 
 log() { printf '[verify-rpg-experience-review] %s\n' "$*"; }
 die() { printf '[verify-rpg-experience-review] ERROR: %s\n' "$*" >&2; exit 1; }
@@ -17,17 +17,20 @@ require_text() {
 
 log "checking required files"
 [[ -f "${REVIEW}" ]] || die "missing review doc: docs/rpg-experience-review.md"
-[[ -f "${README}" ]] || die "missing README.md"
-[[ -f "${RECEIPT}" ]] || die "missing final receipt"
 
 log "checking claim boundary language"
 for text in \
+  "## Claim Boundary" \
   "automated Interaction evidence" \
   "playable" \
   "release-ready" \
   "Experience-layer completion" \
   "Release-layer completion" \
+  "Completion Language" \
+  "Allowed completion language" \
+  "Forbidden completion language" \
   "not_claimed" \
+  "release_ready_claim: \"not_claimed\"" \
   "No live human playtest, screenshot, or video artifact was produced"; do
   require_text "${REVIEW}" "${text}"
 done
@@ -44,6 +47,16 @@ for field in \
   require_text "${REVIEW}" "${field}"
 done
 
+log "checking claim boundary schema fields"
+for field in \
+  "claim_boundary:" \
+  "automated_interaction_evidence:" \
+  "experience_claim:" \
+  "playable_claim:" \
+  "release_ready_claim:"; do
+  require_text "${REVIEW}" "${field}"
+done
+
 log "checking playtest issue schema fields"
 for field in \
   "phase:" \
@@ -54,6 +67,16 @@ for field in \
   "repro:" \
   "source:"; do
   require_text "${REVIEW}" "${field}"
+done
+
+log "checking relative artifact guidance"
+for text in \
+  "Minimum Experience session fields" \
+  "repository-relative paths" \
+  "Do not use local absolute paths" \
+  "blocked" \
+  "needs_followup"; do
+  require_text "${REVIEW}" "${text}"
 done
 
 log "checking initial review references automated commands and artifacts"
@@ -68,9 +91,50 @@ for text in \
   require_text "${REVIEW}" "${text}"
 done
 
-log "checking README and final receipt links"
-require_text "${README}" "docs/rpg-experience-review.md"
-require_text "${RECEIPT}" "docs/rpg-experience-review.md"
-require_text "${RECEIPT}" "Experience Review Boundary"
+log "checking next-step checklist"
+for text in \
+  "## Next Human/AI-Assisted Review Checklist" \
+  "Battle UI clarity" \
+  "Menu affordance clarity" \
+  "Sample content usefulness" \
+  "Save/replay interpretability" \
+  "Evidence capture"; do
+  require_text "${REVIEW}" "${text}"
+done
+
+log "checking optional template documents"
+if [[ -f "${SESSION_TEMPLATE}" ]]; then
+  require_text "${REVIEW}" "docs/rpg-experience-session-template.md"
+  for field in \
+    "timestamp:" \
+    "session_id:" \
+    "phase:" \
+    "actor:" \
+    "status:" \
+    "artifact_paths:" \
+    "claim_boundary:" \
+    "not_claimed"; do
+    require_text "${SESSION_TEMPLATE}" "${field}"
+  done
+fi
+
+if [[ -f "${PLAYTEST_CHECKLIST}" ]]; then
+  require_text "${REVIEW}" "docs/rpg-experience-playtest-checklist.md"
+  for text in \
+    "Battle UI clarity" \
+    "Menu affordance clarity" \
+    "Sample content usefulness" \
+    "Evidence capture"; do
+    require_text "${PLAYTEST_CHECKLIST}" "${text}"
+  done
+fi
+
+log "checking repository docs do not contain local absolute artifact paths"
+experience_docs=("${REVIEW}")
+[[ -f "${SESSION_TEMPLATE}" ]] && experience_docs+=("${SESSION_TEMPLATE}")
+[[ -f "${PLAYTEST_CHECKLIST}" ]] && experience_docs+=("${PLAYTEST_CHECKLIST}")
+if grep -Eq '(/home/|/tmp/|file://)' "${experience_docs[@]}"; then
+  die "Experience docs must not contain local absolute paths or file:// URLs"
+fi
 
 log "PASS"

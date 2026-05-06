@@ -28,6 +28,8 @@
 
 它不应该成为任何具体游戏项目的业务真相源。已有项目接入时，应优先以插件模式复制到目标项目，再选择性吸收菜单、暂停、开场和加载壳层；不要整包覆盖目标项目的主场景、autoload 或运行时服务。
 
+受控吸收路线见 `docs/ui-game-shell-recipe.md`。默认产品化路径是 `packs/ui-game-shell` primitives；本候选只作为 Maaack's Game Template 的 reference，不接管 `run/main_scene`、autoload、save truth 或 FlowCore stack。
+
 ## Upstream / Upgrade
 
 当前 vendored addon 的 upstream 已锁定为：
