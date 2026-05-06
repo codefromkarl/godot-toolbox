@@ -1,0 +1,33 @@
+{
+  "schema": "rpg_art_demo_placeholder_assets",
+  "status": "first-party-placeholder-only",
+  "purpose": "Declare visual asset categories for future CC0 import validation without vendoring third-party binaries.",
+  "categories": [
+    {
+      "name": "characters",
+      "placeholder": "text-only",
+      "intended_use": "future player and NPC sprite or model samples"
+    },
+    {
+      "name": "enemies",
+      "placeholder": "text-only",
+      "intended_use": "future enemy sprite or model samples"
+    },
+    {
+      "name": "tiles_and_props",
+      "placeholder": "text-only",
+      "intended_use": "future map tiles, dungeon props, and town props"
+    },
+    {
+      "name": "ui_skin",
+      "placeholder": "text-only",
+      "intended_use": "future panels, buttons, icons, and HUD visuals"
+    },
+    {
+      "name": "battle_backgrounds",
+      "placeholder": "text-only",
+      "intended_use": "future static or layered battle backdrop samples"
+    }
+  ],
+  "license_status": "repository-owned placeholder metadata; no external asset imported"
+}

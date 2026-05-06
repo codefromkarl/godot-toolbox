@@ -1,0 +1,28 @@
+{
+  "schema": "rpg_art_demo_placeholder_audio_assets",
+  "status": "first-party-placeholder-only",
+  "purpose": "Declare audio asset categories for future CC0 import validation without vendoring third-party binaries.",
+  "categories": [
+    {
+      "name": "ui_sfx",
+      "placeholder": "text-only",
+      "intended_use": "future button, confirm, cancel, and menu sounds"
+    },
+    {
+      "name": "battle_sfx",
+      "placeholder": "text-only",
+      "intended_use": "future hit, cast, defend, and defeat sounds"
+    },
+    {
+      "name": "ambient_sfx",
+      "placeholder": "text-only",
+      "intended_use": "future room, town, dungeon, and travel ambience"
+    },
+    {
+      "name": "music",
+      "placeholder": "text-only",
+      "intended_use": "future town, dungeon, battle, and victory loops"
+    }
+  ],
+  "license_status": "repository-owned placeholder metadata; no external asset imported"
+}
