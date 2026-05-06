@@ -1,0 +1,10 @@
+# Vendored addon directories — excluded from language statistics
+packs/*/godot/addons/** linguist-vendored
+templates/base/godot/addons/** linguist-vendored
+
+# Documentation
+*.md linguist-documentation
+docs/** linguist-documentation
+
+# Generated / data files
+*.json linguist-generated

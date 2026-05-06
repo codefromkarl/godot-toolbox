@@ -1,0 +1,82 @@
+# godot-toolbox
+
+> AI-native Godot 4.6+ bootstrap control plane. 24 curated plugin packs, manifest-driven assembly, CI-verified contracts, optional RPG scaffolds.
+
+## Quick Start
+
+```bash
+git clone https://github.com/codefromkarl/godot-toolbox.git
+cd godot-toolbox
+./scripts/bootstrap_toolbox_project.sh /path/to/new-project --packs=validation,debug
+```
+
+Preview pack assembly without writing files:
+```bash
+./scripts/bootstrap_toolbox_project.sh ../preview --packs=flow-core,simulation-core,data-core,save-core --dry-run-report
+```
+
+## Pack System
+
+Packs are defined in `packs.manifest.json` with:
+- `kind`: baseline | optional-pack | architecture-core | architecture-test-kit
+- `requires`: dependency packs (must be co-selected)
+- `conflicts`: mutually exclusive packs
+- `autoloads`: singleton scripts injected into project.godot
+- `verification`: scripts that validate pack contracts
+- `godot_version.min`: minimum Godot version (currently 4.6)
+
+Upstream plugins are pinned in `upstreams.lock.json` with git refs. Update via:
+```bash
+./scripts/update_plugin_from_upstream.sh --id=<plugin_id> --dry-run
+```
+
+## Pack Categories
+
+### Baseline (always included)
+- `base` — gdUnit4 testing + gdtoolkit linting
+
+### Optional Vendor Packs (opt-in)
+- `validation` — Godot Doctor: resource/scene constraint validation
+- `debug` — Signal Lens: signal flow visualization
+- `stateful` — Godot State Charts: state machine architecture
+- `juice` — Sparkle Lite: game-feel effects
+- `automation` — GodotE2E: runtime UI/E2E testing
+- `input` — G.U.I.D.E: cross-device input mapping
+- `inventory` — GLoot: inventory/equipment authoring
+- `quest` — QuestSystem: resource-driven quest management
+- `ai-behavior` — Beehave: behavior tree AI
+- `save-state-lite` — SaveState Lite: advanced save tooling (conflicts with save-core)
+- `dialogue` — Dialogue Manager: dialogue graph authoring
+
+### Architecture Packs (toolbox-owned, no vendored dependencies)
+- `flow-core` — game mode/flow stack with FlowCore autoload
+- `simulation-core` — tick scheduler and system contracts
+- `data-core` — data registry with stable ID contracts
+- `save-core` — versioned snapshots and atomic JSON writes
+- `rules-events-core` — event/condition/effect execution spine
+- `ui-game-shell` — menu, pause, modal, loading primitives
+- `flow-test-kit` — flow smoke fixtures and gdUnit4 suites
+- `ai-testing` — AI-driven test exploration framework
+- `rpg-core` — RPG character/party/wallet/equipment state
+- `rpg-battle-core` — turn-based battle contracts
+- `rpg-save-adapter` — RPG state to save-core serialization
+- `rpg-test-kit` — battle replay, event stream, state dump evidence
+- `rpg-art-demo` — first-party placeholder art/audio scaffold
+
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| `packs.manifest.json` | Pack definitions, dependencies, autoloads |
+| `upstreams.lock.json` | Pinned upstream plugin versions and refs |
+| `scripts/bootstrap_toolbox_project.sh` | Assemble new project from selected packs |
+| `scripts/verify_bootstrap_flow.sh` | End-to-end bootstrap + import + smoke verification |
+| `scripts/verify_game_architecture_packs.sh` | Architecture pack contract verification |
+| `scripts/verify_pack_matrix.sh --all` | Full pack matrix verification |
+| `scripts/import_plugin_from_upstream.sh` | Import new upstream plugin |
+| `scripts/update_plugin_from_upstream.sh` | Update pinned upstream plugin |
+| `templates/base/` | Base project template (gdUnit4 + gdtoolkit) |
+| `docs/plugin-catalog.md` | Plugin catalog with selection rationale |
+| `docs/plugin-integration-standard.md` | Plugin integration requirements |
+| `docs/selection-framework.md` | Selection axis framework |
+| `docs/maintenance-workflow.md` | Import, update, assembly, verification manual |
